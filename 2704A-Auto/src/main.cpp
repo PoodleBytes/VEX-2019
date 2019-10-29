@@ -1,3 +1,8 @@
+/*----------------------------------------------------------------------------*/
+//  First Autonomous Vesion
+//  NOTES.TXT FOR NOTES / USEFUL SETTINGS
+/*----------------------------------------------------------------------------*/
+
 
 #include "vex.h"
 
@@ -6,20 +11,21 @@ using namespace vex;
 // A global instance of competition
 competition Competition;
 
-
-//FUNCTIONS
+// define your global instances of motors and other devices here
+//PROTOTYPE FUNCTION 
 void pre_auton(void);       //SETTINGS FOR MOTORS, SCREEN ETC
 void setUpMotor(motor(M));  //default motor settings
 int updateScreen();			    //DISPLAY ENCODER TASK
 int tLift();              //arm-relatecd tasks / buttons
-
+void openClaw(void); //time in seconds
+void closeClaw(double); //time in seconds
 
 //VARIABLES
+double adjField = 1.0;  //adjust automouse drive() degrees match conditions
 double adjSpeed = 1.0;   //adjust drive sensitivity
 double adjLift = 1.0;    //adjust arm's sensitivity
 int deadBand = 10;      //range below which joystick is ignored
-double adjField = 1.0;  //adjust automouse drive() degrees match conditions
-bool encode = 0;        //true = display encoder on controller
+bool encode = 1;        //true displays encoders
 
 //MOVEMENT / CONTROL
 void rDrive(double, double, int, int, bool);  //DRIVE BY RELATIVE DISTANCE
@@ -28,11 +34,13 @@ void aLift(double, int, bool);                //ARM BY ABSOLUTE DISTANCE
 void sDrive(int, int);
 
 void autonomous( void ) {
-
-  Dt.driveFor(12, inches);
-  Dt.setTurnVelocity(50, pct);
-  Dt.turnFor(45.0, deg);
-
+  
+  //  TEST ONLY //
+  closeClaw(0.75);  //closes claw
+  rLift(360,75,1);  //LIFT ARM ABOUT 10"
+  rDrive(-360,360,50,50,1); //TURN LEFT 
+  rDrive(360,360,50,50,1); //DRIVE FORWARD ABOUT 12" (one rotation)
+  openClaw(); //opens claw to start position
 
 }//end autonomous
 
@@ -95,13 +103,13 @@ int tLift(void){ //ARM & CLAW TASK
 
 void rDrive(double lDeg, double rDeg, int l, int r, bool b){  // drive by relative distance
   rDeg = rDeg * -1;
-  L_Drive.rotateFor(lDeg, vex::rotationUnits::deg,l, vex::velocityUnits::pct, false); 
-  R_Drive.rotateFor(rDeg, vex::rotationUnits::deg,r, vex::velocityUnits::pct, b); 
+  L_Drive.rotateFor(lDeg * adjField, vex::rotationUnits::deg,l, vex::velocityUnits::pct, false); 
+  R_Drive.rotateFor(rDeg * adjField, vex::rotationUnits::deg,r, vex::velocityUnits::pct, b); 
 }//end rDrive
 
 void sDrive(int lValue, int  rValue){  // drive by spin
-  L_Drive.spin(vex::directionType::fwd, rValue, vex::velocityUnits::pct);
-  R_Drive.spin(vex::directionType::fwd, lValue, vex::velocityUnits::pct);
+  L_Drive.spin(vex::directionType::fwd, lValue, vex::velocityUnits::pct);
+  R_Drive.spin(vex::directionType::fwd, rValue, vex::velocityUnits::pct);
 }//end rDrive
 
 void aLift(double deg, int s, bool b){  //position lift by absolute position
@@ -123,6 +131,18 @@ void rLift(double deg, int s, bool b){  //position lift by relative position
         {}
     }
 }//end eArm
+
+void closeClaw(double t){
+  Claw.spin(vex::directionType::fwd, 80, vex::velocityUnits::pct);
+  wait(t,seconds);
+  Claw.stop(hold);
+}//end rClaw
+
+void openClaw(void){
+  Claw.setVelocity(75, pct);
+  Claw.spinTo(0,deg);   //spin to home position
+  Claw.stop(brake);
+}//end rClaw
 
 
 //SYSTEM SET-UP

@@ -1,0 +1,25 @@
+============================================================
+autonomous settings:
+
+  DRIVE
+  rDrive(-360,360,50,50,1); //turns left (left rotation, right rotate, left speed, right speed, wait until finished before next step )
+  rDrive(360,360,50,50,1); //DRIVE FORWARD ABOUT 12" (one rotation)
+
+  LIFT
+  rLift(360,75,1);  //lifts arm about 10"  (rotate 360 degrees, 75 percent speed, wait until finished before next step)
+  
+  CLAW
+  closeClaw(0.75);  //closes claw (3/4 of a second) - may need to adjust time
+  openClaw(); //opens claw to start position
+
+==========================================================
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// L_Drive              motor         16              
+// R_Drive              motor         15              
+// L_Lift               motor         9               
+// R_Lift               motor         2               
+// Claw                 motor         5               
+// ---- END VEXCODE CONFIGURED DEVICES ----

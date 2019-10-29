@@ -13,19 +13,20 @@ void setUpMotor(motor(M));  //default motor settings
 int updateScreen();			    //DISPLAY ENCODER TASK
 int tLift();              //arm-relatecd tasks / buttons
 
-
 //VARIABLES
 double adjSpeed = 1.0;   //adjust drive sensitivity
 double adjLift = 1.0;    //adjust arm's sensitivity
 int deadBand = 10;      //range below which joystick is ignored
 double adjField = 1.0;  //adjust automouse drive() degrees match conditions
-bool encode = 0;        //true = display encoder on controller
+bool encode = 0;        //true displays encoders
 
-//MOVEMENT / CONTROL
-void rDrive(double, double, int, int, bool);  //DRIVE BY RELATIVE DISTANCE
-void rLift(double, int, bool);                //ARM BY RELATIVE DISTANCE 
-void aLift(double, int, bool);                //ARM BY ABSOLUTE DISTANCE
-void sDrive(int, int);
+//MOVEMENT / CONTROL - rDrive may not be needed if drivetrain works...
+void rDrive(double, double, double, double, bool);  //DRIVE BY RELATIVE DISTANCE
+void rLift(double, double, bool);                //ARM BY RELATIVE DISTANCE 
+void aLift(double, double, bool);                //ARM BY ABSOLUTE DISTANCE
+void sDrive(double, double);
+
+motor_group lift(L_Lift,R_Lift);
 
 void autonomous( void ) {
 
@@ -77,49 +78,46 @@ void usercontrol( void ) {
 int tLift(void){ //ARM & CLAW TASK
     while(1){
       if(abs(Controller1.Axis3.value())>deadBand){  
-        L_Lift.spin(vex::directionType::fwd, Controller1.Axis3.value()*adjLift, vex::velocityUnits::rpm);
-        R_Lift.spin(vex::directionType::fwd, Controller1.Axis3.value()*adjLift, vex::velocityUnits::rpm);
+        lift.spin(vex::directionType::fwd, Controller1.Axis3.value()*adjLift, vex::velocityUnits::pct);
       }else if(Controller1.ButtonL1.pressing()){    
-          Claw.spin(vex::directionType::fwd, 50, vex::velocityUnits::pct);
+        Claw.spin(vex::directionType::fwd, 50, vex::velocityUnits::pct);
       }else if(Controller1.ButtonL2.pressing()){
-          Claw.spin(vex::directionType::rev, 50, vex::velocityUnits::pct); 
+        Claw.spin(vex::directionType::rev, 50, vex::velocityUnits::pct); 
       }else{
-          L_Lift.stop(brakeType::hold);
-          R_Lift.stop(brakeType::hold);
-          Claw.stop(brakeType::hold);
+        lift.stop(brakeType::hold);
+        Claw.stop(brakeType::hold);
       }
       vex::task::sleep(5);
     }   
     return 0;
 }//end tLift
 
-void rDrive(double lDeg, double rDeg, int l, int r, bool b){  // drive by relative distance
+void rDrive(double lDeg, double rDeg, double l, double r, bool b){  // drive by relative distance
   rDeg = rDeg * -1;
   L_Drive.rotateFor(lDeg, vex::rotationUnits::deg,l, vex::velocityUnits::pct, false); 
   R_Drive.rotateFor(rDeg, vex::rotationUnits::deg,r, vex::velocityUnits::pct, b); 
 }//end rDrive
 
-void sDrive(int lValue, int  rValue){  // drive by spin
+void sDrive(double lValue, double  rValue){  // drive by spin
   L_Drive.spin(vex::directionType::fwd, rValue, vex::velocityUnits::pct);
   R_Drive.spin(vex::directionType::fwd, lValue, vex::velocityUnits::pct);
 }//end rDrive
 
-void aLift(double deg, int s, bool b){  //position lift by absolute position
-    L_Lift.rotateTo(deg, vex::rotationUnits::deg,s, vex::velocityUnits::pct, false); //This command must be non blocking.
-    R_Lift.rotateTo(deg, vex::rotationUnits::deg,s, vex::velocityUnits::pct, b); //This command is blocking so the program will wait here until the right motor is done.  
-    
+void aLift(double deg, double s, bool b){  //position lift by absolute position
+    lift.rotateTo(deg, vex::rotationUnits::deg,s, vex::velocityUnits::pct, false); //This command must be non blocking.
+
     if(b){  // b = tue means wait for motors stop spinning or timeout
-      while(R_Lift.isSpinning()||L_Lift.isSpinning())
+      while(lift.isSpinning())
         {}
     }
+
 }//end aArm
 
-void rLift(double deg, int s, bool b){  //position lift by relative position
-    L_Lift.rotateFor(deg, vex::rotationUnits::deg,s, vex::velocityUnits::pct, false); //This command must be non blocking.
-    R_Lift.rotateFor(deg, vex::rotationUnits::deg,s, vex::velocityUnits::pct,b); //This command is blocking so the program will wait here until the right motor is done.  
-    
+void rLift(double deg, double s, bool b){  //position lift by relative position
+    lift.rotateFor(deg, vex::rotationUnits::deg,s, vex::velocityUnits::pct, false); //This command must be non blocking.
+     
     if(b){  // b = tue means wait for motors stop spinning or timeout
-      while(R_Lift.isSpinning()||L_Lift.isSpinning())
+      while(lift.isSpinning())
         {}
     }
 }//end eArm
@@ -136,7 +134,7 @@ void pre_auton(void) {
   setUpMotor(L_Lift);
   setUpMotor(R_Lift);
   setUpMotor(Claw);
-    
+
     //clear controller display
     Controller1.Screen.clearScreen();
 } //end pre_auton  
