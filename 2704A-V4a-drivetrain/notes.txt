@@ -3,9 +3,20 @@
 /*    Module:       main.cpp                                                  */
 /*    Author:       VEX                                                       */
 /*    Created:      Thu Sep 26 1019                                           */
-/*    Description:  Clawbot Competition Template                              */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+
+added drivetrain Dt in hopes of more accurate autonomous
+tDrive(float, float, boolean) 
+    distance in inches
+    speed in percent
+    wait until completed
+
+tTurn(float, float, boolean)
+    angle in degrees
+    speed in percent
+    wait until completed
+
 
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:

@@ -6,33 +6,33 @@ using namespace vex;
 // A global instance of competition
 competition Competition;
 
-
 //FUNCTIONS
 void pre_auton(void);       //SETTINGS FOR MOTORS, SCREEN ETC
 void setUpMotor(motor(M));  //default motor settings
 int updateScreen();			    //DISPLAY ENCODER TASK
 int tLift();              //arm-relatecd tasks / buttons
 
-
 //VARIABLES
 double adjSpeed = 1.0;   //adjust drive sensitivity
 double adjLift = 1.0;    //adjust arm's sensitivity
+static double CIRCUMFERENCE  = 12.556; //circumference of wheel in inches
 int deadBand = 10;      //range below which joystick is ignored
 double adjField = 1.0;  //adjust automouse drive() degrees match conditions
-bool encode = 0;        //true displays encoders
+bool encode = 0;        //displays encoders to controller
 
 //MOVEMENT / CONTROL
 void rDrive(double, double, int, int, bool);  //DRIVE BY RELATIVE DISTANCE
 void rLift(double, int, bool);                //ARM BY RELATIVE DISTANCE 
 void aLift(double, int, bool);                //ARM BY ABSOLUTE DISTANCE
 void sDrive(int, int);
+void tDrive(float, float, bool);  //drivetrain function distance (in.) speed, wait
+void tTurn(float, float, bool);   //drivetrain turn (distance (in) speed, wait)
 
+//autonomous 
 void autonomous( void ) {
 
-  Dt.driveFor(12, inches);
-  Dt.setTurnVelocity(50, pct);
-  Dt.turnFor(45.0, deg);
-
+tDrive(12, 100, 1); //drive 12" at full speed, wait until complete
+tTurn(90,50,0);     
 
 }//end autonomous
 
@@ -88,10 +88,22 @@ int tLift(void){ //ARM & CLAW TASK
           R_Lift.stop(brakeType::hold);
           Claw.stop(brakeType::hold);
       }
-      vex::task::sleep(5);
+      vex::task::sleep(100);
     }   
     return 0;
 }//end tLift
+
+void tDrive(float d, float s, bool w){
+  Dt.setDriveVelocity(s, pct);
+  Dt.driveFor(12, inches, w);
+  Dt.stop();
+}
+
+void tTurn(float a, float s, bool w){ 
+  Dt.setTurnVelocity(s, pct);
+  Dt.turnFor(a, deg, w);
+  Dt.stop();
+}
 
 void rDrive(double lDeg, double rDeg, int l, int r, bool b){  // drive by relative distance
   rDeg = rDeg * -1;
@@ -130,6 +142,10 @@ void pre_auton(void) {
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
 
+  //set up Drivetrain
+  Dt.setStopping(hold);
+  Dt.setTimeout(3, sec);
+
   //set motor defayults 
 	setUpMotor(L_Drive);
   setUpMotor(R_Drive);  
@@ -152,10 +168,10 @@ void setUpMotor(motor(M)){
 int updateScreen(){
     while(1){
         Controller1.Screen.clearScreen();
-        Controller1.Screen.setCursor(1,1);
-        Controller1.Screen.print("Left: %4.1f", L_Drive.rotation(rotationUnits::deg));   //LEFT MOTOR 
+        Controller1.Screen.setCursor(1,1); 
+        Controller1.Screen.print("Left: %3.1f", L_Drive.rotation(rotationUnits::deg)/360 * CIRCUMFERENCE, " in" );   //LEFT MOTOR in inches
         Controller1.Screen.setCursor(2,1);
-        Controller1.Screen.print("Right: %4.1f",R_Drive.rotation(rotationUnits::deg));   //RIGHT MOTOR        
+        Controller1.Screen.print("Right: %3.1f",R_Drive.rotation(rotationUnits::deg)/360 * CIRCUMFERENCE, " in");   //RIGHT MOTOR        
         Controller1.Screen.setCursor(3,1);
         Controller1.Screen.print("L: %4.2f S: %4.2f", L_Lift.rotation(rotationUnits::deg),Claw.rotation(rotationUnits::deg));   //LIFT AND STAND
 		
