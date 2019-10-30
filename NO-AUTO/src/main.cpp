@@ -165,6 +165,11 @@ void pre_auton(void) {
   setUpMotor(L_Lift);
   setUpMotor(R_Lift);
   setUpMotor(Claw);
+  
+  Lift.setMaxTorque(90,percentUnits::pct); //set torque
+  Lift.setStopping(brakeType::hold);          //braking
+  Lift.setTimeout(3,timeUnits::sec);       //set motor timeout
+  Lift.resetRotation();                    //reset encoders
     
     //clear controller display
     Controller1.Screen.clearScreen();
