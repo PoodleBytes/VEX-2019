@@ -13,7 +13,10 @@ autonomous settings:
   openClaw(); //opens claw to start position
 
 ==========================================================
-10-29 - added motor_group lift
+        CHANGE LOG
+10-29
+      - added motor_group Lift
+      - added BtnUp / BtnDwn to move robot and arm to minimize offset
 
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:

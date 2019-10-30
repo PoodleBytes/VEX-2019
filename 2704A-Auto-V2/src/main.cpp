@@ -91,6 +91,22 @@ int tLift(void){ //ARM & CLAW TASK
           Claw.spin(vex::directionType::fwd, 50, vex::velocityUnits::pct);
       }else if(Controller1.ButtonL2.pressing()){
           Claw.spin(vex::directionType::rev, 50, vex::velocityUnits::pct); 
+      }else if(Controller1.ButtonUp.pressing()){    //move 'bot as arm lifts to minimize offset
+          if (L_Lift.rotation(deg) < 300){           // arm is < horizontal
+            Claw.spin(vex::directionType::fwd, 10, vex::velocityUnits::pct); 
+            sDrive(-10,-10);
+          } else {                                  // arm is > horizontal 
+            Claw.spin(vex::directionType::fwd, 10, vex::velocityUnits::pct); 
+            sDrive(10,10);
+          }
+      }else if(Controller1.ButtonDown.pressing()){
+          if (L_Lift.rotation(deg)< 300){
+            Claw.spin(vex::directionType::rev, 10, vex::velocityUnits::pct); 
+            sDrive(-10,-10);
+          } else {
+            Claw.spin(vex::directionType::rev, 10, vex::velocityUnits::pct); 
+            sDrive(10,10);
+          }
       }else{
           Lift.stop(brakeType::hold);
           Claw.stop(brakeType::hold);
