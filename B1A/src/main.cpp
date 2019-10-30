@@ -36,13 +36,14 @@ motor_group Lift(L_Lift,R_Lift);  // makes 2 lift motors act as one
 
 void autonomous( void ) {
   
-  //  TEST ONLY //
+  rDrive(120,120,50,50,1); // drive to cube
   closeClaw(0.75);  //closes claw
-  rLift(360,75,1);  //LIFT ARM ABOUT 10"
-  rDrive(-360,360,50,50,1); //TURN LEFT 
-  rDrive(360,360,50,50,1); //DRIVE FORWARD ABOUT 12" (one rotation)
+  rLift(120,75,0);  //LIFT ARM ABOUT 3"
+  rDrive(-200,200,30,30,1); //turn left 45deg
+  rDrive(350,350,40,40,1);
   openClaw(); //opens claw to start position
-
+  rDrive(0, -50, 30, 30, 1);
+  rDrive(-400,-400,40,40,1);
 }//end autonomous
 
 void usercontrol( void ) {
@@ -88,7 +89,7 @@ int tLift(void){ //ARM & CLAW TASK
       if(abs(Controller1.Axis3.value())>deadBand){  
         Lift.spin(vex::directionType::fwd, Controller1.Axis3.value()*adjLift, vex::velocityUnits::pct);
       }else if(Controller1.ButtonL1.pressing()){    
-          Claw.spin(vex::directionType::fwd, 50, vex::velocityUnits::pct);
+          Claw.spin(vex::directionType::fwd, 80, vex::velocityUnits::pct);
       }else if(Controller1.ButtonL2.pressing()){
           Claw.spin(vex::directionType::rev, 50, vex::velocityUnits::pct); 
       }else if(Controller1.ButtonUp.pressing()){    //move 'bot as arm lifts to minimize offset
