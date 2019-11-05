@@ -28,6 +28,7 @@ bool encode = 1;        //set to true (1) will displays encoders on controller, 
 
 //MOVEMENT / CONTROL
 void rDrive(double, double, double, double, bool);  //DRIVE BY RELATIVE DISTANCE
+void xDrive(double, double, double, double, bool);  //EXPERIMENTAL - DRIVE BY RELATIVE DISTANCE
 void rLift(double, double, bool);                //ARM BY RELATIVE DISTANCE 
 void aLift(double, double, bool);                //ARM BY ABSOLUTE DISTANCE
 void sDrive(double, double);
@@ -121,6 +122,39 @@ void rDrive(double lDeg, double rDeg, double l, double r, bool b){  // drive by 
   rDeg = rDeg * -1;
   L_Drive.rotateFor(lDeg * adjField, vex::rotationUnits::deg,l, vex::velocityUnits::pct, false); 
   R_Drive.rotateFor(rDeg * adjField, vex::rotationUnits::deg,r, vex::velocityUnits::pct, b); 
+
+}//end rDrive
+
+void xDrive(double lDeg, double rDeg, double l, double r, bool b){  // drive for distance & decellerate
+  // correct rDrive direction and compensate for field 'speed'
+  rDeg = rDeg * -1 * adjField;
+  lDeg = lDeg * adjField;
+
+  //reset encoders
+  L_Drive.resetRotation();
+  R_Drive.resetRotation();
+
+  double coefD = 0.9;   //distance to go before slowing down (90%)
+  double coefS = 0.5;   //amount to slow to completion (50%)
+
+  double lD1 = lDeg * coefD;
+  double lD2 = lDeg - lD1;
+  double rD1 = rDeg * coefD;
+  double rD2 = rDeg - lD1;
+
+  //set motors to coast so 'bot doesn't stop when slowing
+  L_Drive.setBrake(coast);
+  R_Drive.setBrake(coast);
+
+  L_Drive.spinTo(lD1, vex::rotationUnits::deg,l, vex::velocityUnits::pct, false); 
+  R_Drive.spinTo(rD1, vex::rotationUnits::deg,r, vex::velocityUnits::pct, false); 
+
+  L_Drive.setBrake(brake);
+  R_Drive.setBrake(brake);
+  
+  L_Drive.spinTo(lD2, vex::rotationUnits::deg,l * coefS, vex::velocityUnits::pct, false); 
+  R_Drive.spinTo(rD2, vex::rotationUnits::deg,r * coefS, vex::velocityUnits::pct, b); 
+  
 }//end rDrive
 
 void sDrive(double lValue, double  rValue){  // drive by spin
