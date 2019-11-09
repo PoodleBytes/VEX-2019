@@ -37,14 +37,10 @@ motor_group Lift(L_Lift,R_Lift);  // makes 2 lift motors act as one
 
 void autonomous( void ) {
   
-  rDrive(120,120,50,50,1); // drive to cube
-  closeClaw(0.75);  //closes claw
-  rLift(120,75,0);  //LIFT ARM ABOUT 3"
-  rDrive(-200,200,30,30,1); //turn left 45deg
-  rDrive(350,350,40,40,1);
-  openClaw(); //opens claw to start position
-  rDrive(0, -50, 30, 30, 1);
-  rDrive(-400,-400,40,40,1);
+  xDrive(1000,1000,50,50,1); // drive to cube
+  wait(3,seconds);
+  xDrive(-1000,-1000,50,50,1); // drive to cube
+  
 }//end autonomous
 
 void usercontrol( void ) {
@@ -62,8 +58,8 @@ void usercontrol( void ) {
     while (1){  
       //DRIVE
 
-      if(abs(Controller1.Axis1.value() + Controller1.Axis2.value())<80 && abs(Controller1.Axis1.value() - Controller1.Axis2.value())< 80){
-        adjSpeed = 0.25;
+      if(abs(Controller1.Axis1.value() + Controller1.Axis2.value())<120 && abs(Controller1.Axis1.value() - Controller1.Axis2.value())< 120){
+        adjSpeed = 0.4;
       } else {adjSpeed = 1.0;}
 
       L_Drive.spin(directionType::fwd, (Controller1.Axis1.value() + Controller1.Axis2.value())*adjSpeed, velocityUnits::pct);
@@ -134,26 +130,31 @@ void xDrive(double lDeg, double rDeg, double l, double r, bool b){  // drive for
   L_Drive.resetRotation();
   R_Drive.resetRotation();
 
-  double coefD = 0.9;   //distance to go before slowing down (90%)
-  double coefS = 0.5;   //amount to slow to completion (50%)
+  double coefD = 0.2;   //distance to go before slowing down (90%)
+  double coefS = 0.3;   // (50%)
 
-  double lD1 = lDeg * coefD;
-  double lD2 = lDeg - lD1;
-  double rD1 = rDeg * coefD;
-  double rD2 = rDeg - lD1;
+  double lD1 = lDeg - (lDeg * coefD);    //L distance to go before slowing
+  double rD1 = rDeg - (rDeg * coefD);    //R distance to go before slowing
+  double lD0 = lDeg * coefD/4;  //distance to start accelerating
+  double rD0 = rDeg * coefD/4;  //distance to start accelerating
 
   //set motors to coast so 'bot doesn't stop when slowing
   L_Drive.setBrake(coast);
   R_Drive.setBrake(coast);
-
-  L_Drive.spinTo(lD1, vex::rotationUnits::deg,l, vex::velocityUnits::pct, false); 
-  R_Drive.spinTo(rD1, vex::rotationUnits::deg,r, vex::velocityUnits::pct, false); 
-
-  L_Drive.setBrake(brake);
-  R_Drive.setBrake(brake);
+  //slowly accelerate
+  L_Drive.spinFor(lD0, vex::rotationUnits::deg,l * coefS, vex::velocityUnits::pct, false); 
+  R_Drive.spinFor(rD0, vex::rotationUnits::deg,r * coefS, vex::velocityUnits::pct, 1); 
+  wait(.1,seconds);
+  //full speed
+  L_Drive.spinFor(lD1, vex::rotationUnits::deg,l, vex::velocityUnits::pct, false); 
+  R_Drive.spinFor(rD1, vex::rotationUnits::deg,r, vex::velocityUnits::pct, 1); 
+  wait(.1,seconds);
+  //slowly decellerate to target
+  L_Drive.setBrake(hold);
+  R_Drive.setBrake(hold);
   
-  L_Drive.spinTo(lD2, vex::rotationUnits::deg,l * coefS, vex::velocityUnits::pct, false); 
-  R_Drive.spinTo(rD2, vex::rotationUnits::deg,r * coefS, vex::velocityUnits::pct, b); 
+  L_Drive.spinTo(lDeg, vex::rotationUnits::deg,l * coefS, vex::velocityUnits::pct, false); 
+  R_Drive.spinTo(rDeg, vex::rotationUnits::deg,r * coefS, vex::velocityUnits::pct, b); 
   
 }//end rDrive
 
@@ -218,7 +219,7 @@ void pre_auton(void) {
 //DEFAULT MOTOR SETTINGS
 void setUpMotor(motor(M)){
     M.setMaxTorque(90,percentUnits::pct); //set torque
-    M.setStopping(brakeType::hold);          //braking
+    M.setStopping(hold);          //braking
     M.setTimeout(3,timeUnits::sec);       //set motor timeout
     M.resetRotation();                    //reset encoders
 }
@@ -231,7 +232,7 @@ int updateScreen(){
         Controller1.Screen.setCursor(2,1);
         Controller1.Screen.print("Right: %4.1f",R_Drive.rotation(rotationUnits::deg));   //RIGHT MOTOR        
         Controller1.Screen.setCursor(3,1);
-        Controller1.Screen.print("L: %4.2f S: %4.2f", L_Lift.rotation(rotationUnits::deg),Claw.rotation(rotationUnits::deg));   //LIFT AND STAND
+        Controller1.Screen.print("L: %4f S: %4.2f", Controller1.Axis2.value(),Claw.rotation(rotationUnits::deg));   //LIFT AND STAND
 		
 	 //RESET ENCODERS
       if(Controller1.ButtonLeft.pressing()){   //DRIVE ENCODERS

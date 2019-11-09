@@ -69,8 +69,8 @@ void usercontrol( void ) {
     while (1){  
       //DRIVE
 
-      if(abs(Controller1.Axis1.value() + Controller1.Axis2.value())<80 && abs(Controller1.Axis1.value() - Controller1.Axis2.value())< 80){
-        adjSpeed = 0.25;
+      if(abs(Controller1.Axis1.value() + Controller1.Axis2.value())<120 && abs(Controller1.Axis1.value() - Controller1.Axis2.value())< 120){
+        adjSpeed = 0.4;
       } else {adjSpeed = 1.0;}
 
       L_Drive.spin(directionType::fwd, (Controller1.Axis1.value() + Controller1.Axis2.value())*adjSpeed, velocityUnits::pct);
