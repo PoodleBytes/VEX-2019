@@ -45,7 +45,7 @@ void autonomous( void ) {
   rDrive(220,220,20,20,1);  //??drive to cube 2 ????
   closeClaw(.85);       //grab cube
   rLift(100,75,1);    //lift cube
-  rDrive(305,-305,25,25,1);   //**TURN right drive to cube 3 
+  rDrive(-305,305,25,25,1);   //**TURN left drive to cube 3 
   rDrive(395,385,30,30,1);    //drive to cube 3
   rLift(-90,20,1);
   openClaw();
