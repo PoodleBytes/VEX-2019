@@ -1,3 +1,14 @@
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// L_Drive              motor         16              
+// R_Drive              motor         15              
+// L_Lift               motor         9               
+// R_Lift               motor         2               
+// Claw                 motor         5               
+// Drivetrain           drivetrain    18, 19          
+// ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 //  First Autonomous Vesion 2 - use motor_group for Lift
 //  NOTES.TXT FOR NOTES / USEFUL SETTINGS

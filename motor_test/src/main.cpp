@@ -85,7 +85,9 @@ int monitorMotor() {
 void writeToLog(){
     if( Brain.SDcard.isInserted() ) {
       // create a file with long filename
-      ofs.open("a_long_filename_debug.txt", std::ofstream::out);
+      int f = 1;
+      std::string fn = intToChar(f);
+      ofs.open(fn, std::ofstream::out);
       ofs << "lorem ipsum\r\n";
       ofs << "this was a test of a file with long file name\r\n";
       ofs.close();

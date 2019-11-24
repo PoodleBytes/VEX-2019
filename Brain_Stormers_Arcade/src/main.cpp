@@ -10,8 +10,8 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
-// Controller1          controller                    
 // Drivetrain           drivetrain    1, 10           
+// Controller1          controller                    
 // ClawMotor            motor         3               
 // ArmMotor             motor         8               
 // ---- END VEXCODE CONFIGURED DEVICES ----
@@ -57,6 +57,12 @@ void autonomous(void) {
 void usercontrol(void) {    
   // User control code here, inside the loop
   while (1) {
+
+    if(abs(Controller1.Axis3.value())>5){  
+        ArmMotor.spin(vex::directionType::fwd, Controller1.Axis3.value()/2, vex::velocityUnits::pct); //lift arm at half of left joystick's value
+    }else{
+      ArmMotor.stop(hold);  //hold arm's current position
+    }
 
     // claw control
     if (Controller1.ButtonR1.pressing()) {

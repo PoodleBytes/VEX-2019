@@ -9,6 +9,7 @@ extern motor R_Drive;
 extern motor L_Lift;
 extern motor R_Lift;
 extern motor Claw;
+extern drivetrain Drivetrain;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Text.

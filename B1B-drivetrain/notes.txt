@@ -1,0 +1,20 @@
+============================================================
+11-17
+added drivetrain DT
+changed closeClaw based on current
+
+        CHANGE LOG
+10-29
+      - added motor_group Lift
+      - added BtnUp / BtnDwn to move robot and arm to minimize offset
+
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// L_Drive              motor         16              
+// R_Drive              motor         15              
+// L_Lift               motor         9               
+// R_Lift               motor         2               
+// Claw                 motor         5               
+// ---- END VEXCODE CONFIGURED DEVICES ----
