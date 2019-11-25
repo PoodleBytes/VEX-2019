@@ -35,7 +35,7 @@ void sDrive(double, double);
 motor_group Lift(L_Lift,R_Lift);  // makes 2 lift motors act as one
 
 void autonomous( void ) {
-  //3-POINT AUTONOMOUS
+  //2-POINT AUTONOMOUS
   closeClaw(0.85);  //grab preload
   rLift(280,75,1);  //LIFT ARM ABOUT 6"
   rDrive(230,230,25,25,1); //drive toward cube 2
@@ -45,21 +45,11 @@ void autonomous( void ) {
   rDrive(220,220,20,20,1);  //??drive to cube 2 ????
   closeClaw(.85);       //grab cube
   rLift(100,75,1);    //lift cube
-  rDrive(305,-305,25,25,1);   //**TURN right drive to cube 3 
-  rDrive(395,385,30,30,1);    //drive to cube 3
-  rLift(-90,20,1);
-  openClaw();
-  rDrive(-250, -250, 50, 50, 1);  
-
-  //rDrive(-255,-255,20,20,1);   
-  //rLift(-30,75,1);        //lower arm onto cube 3
-  //openClaw();   //open claw
-  //rLift(-210,75,1);   //lower arm to grab cube
-  //rDrive(180,180,20,20,1);
-  //closeClaw(.85);       //grab cube 3
-  //rLift(150,75,1);
-  //rDrive(250,-250,20,20,1);
-  //rDrive(120,120,20,20,1);
+  rDrive(305,-305,25,25,1);   //**TURN right drive to corner
+  rDrive(395,385,30,30,1);    //drive forward to put blocks in corner
+  rLift(-90,20,1);    //lower arm
+  openClaw();   //let go of blocks
+  rDrive(-250, -250, 50, 50, 1);  //back up away from coner
 
 }//end autonomous
 
