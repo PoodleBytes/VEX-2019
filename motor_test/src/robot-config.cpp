@@ -14,9 +14,6 @@ motor R_Drive = motor(PORT15, ratio18_1, false);
 motor L_Lift = motor(PORT9, ratio36_1, true);
 motor R_Lift = motor(PORT2, ratio36_1, false);
 motor Claw = motor(PORT5, ratio18_1, true);
-motor LeftDriveSmart = motor(PORT18, ratio18_1, false);
-motor RightDriveSmart = motor(PORT19, ratio18_1, true);
-drivetrain Drivetrain = drivetrain(LeftDriveSmart, RightDriveSmart, 319.19, 295, 130, mm, 1);
 
 // VEXcode generated functions
 
