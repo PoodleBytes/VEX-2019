@@ -1,0 +1,36 @@
+
+
+
+
+/*** PRE DR4B AUTONOMOUS **/
+ //2-POINT AUTONOMOUS - BLUE
+  closeClaw(0.85);  //grab preload
+  rLift(280,75,1);  //LIFT ARM ABOUT 6"
+  rDrive(230,230,25,25,1); //drive toward cube 2
+  rLift(-70,75,1);    //lower arm ontop of cube 2
+  openClaw();   //drop cube
+  rLift(-210,75,1); //lower claw
+  rDrive(220,220,20,20,1);  //??drive to cube 2 ????
+  closeClaw(.85);       //grab cube
+  rLift(100,75,1);    //lift cube
+  rDrive(305,-305,25,25,1);   //**TURN right drive to corner
+  rDrive(395,385,30,30,1);    //drive forward to put blocks in corner
+  rLift(-90,20,1);    //lower arm
+  openClaw();   //let go of blocks
+  rDrive(-250, -250, 50, 50, 1);  //back up away from coner\
+
+  //2-POINT AUTONOMOUS - RED
+  closeClaw(0.85);  //grab preload
+  rLift(280,75,1);  //LIFT ARM ABOUT 6"
+  rDrive(230,230,25,25,1); //drive toward cube 2
+  rLift(-70,75,1);    //lower arm ontop of cube 2
+  openClaw();   //drop cube
+  rLift(-210,75,1); //lower claw
+  rDrive(220,220,20,20,1);  //??drive to cube 2 ????
+  closeClaw(.85);       //grab cube
+  rLift(100,75,1);    //lift cube
+  rDrive(-305,305,25,25,1);   //**TURN LEFT drive to corner
+  rDrive(395,385,30,30,1);    //drive forward to put blocks in corner
+  rLift(-90,20,1);    //lower arm
+  openClaw();   //let go of blocks
+  rDrive(-250, -250, 50, 50, 1);  //back up away from coner
