@@ -37,16 +37,36 @@ motor_group Lift(L_Lift, R_Lift); // makes 2 lift motors act as one
 
 void autonomous(void) {
   //position claw - DO NOT REMOVE
-  homeClaw();   
-  // USE AUTONOMOUS.TXT TO COPY/PASTE AUTONOMOUS VELOW
+  homeClaw();  
 
+  //auto - 4point blue - temp
+  rDrive(140, 140, 40, 40, 1);    //drive to near cube
+  closeClaw(70);                  
+  rLift(220, 60, 1);            //lift cube
+  rDrive(670, 670, 40, 40, 1);  //drive to stack
+  openClaw();
+  rLift(-215, 20, 1);           //lower lift
+  closeClaw(75);
+  rLift(40, 80, 1);             //lift stack
+  rDrive(600, -600, 40, 40, 1); //turn toward corner
+
+ 
+  
+/*   // USE AUTONOMOUS.TXT TO COPY/PASTE AUTONOMOUS VELOW
+  rDrive(1200, 1200, 75, 75, 1);
+  rDrive(-160, -160, 50, 50, 1);
+  rDrive(-420, 420, 40, 40, 1); //TURN LEFT 90DEG
+  rDrive(195, 195, 30, 30, 1);
+  closeClaw(50);
+  rLift(30, 40, 1);
+   rDrive(-500, 500, 50, 50, 1); */
 
 
 } // end autonomous
 
 void usercontrol(void) {
   // ONE TIME COMMANDS RAN B4 USER CONTROL
-
+  homeClaw();
   // START TASK for LIFT
   vex::task t(tLift); // start task which updates controller screen
 
@@ -146,7 +166,7 @@ void rLift(double deg, double s, bool b) { // position lift by relative position
 void closeClaw(double s) {  
   do {
     Claw.spin(vex::directionType::fwd, s, vex::velocityUnits::pct);
-  } while (Claw.current(vex::percentUnits::pct) < 35);
+  } while (Claw.current(vex::percentUnits::pct) < 50);
   Claw.stop(hold);
 } // end rClaw
 
@@ -157,8 +177,8 @@ void openClaw(void) {
 } // end rClaw
 
 void homeClaw(void){
-  Claw.rotateFor(5, vex::rotationUnits::deg, 50, vex::velocityUnits::pct,false);  //slightly close claw
-  Lift.rotateFor(70, vex::rotationUnits::deg, 50, vex::velocityUnits::pct,false); //lift claw to mid-cube
+  Claw.rotateFor(40, vex::rotationUnits::deg, 50, vex::velocityUnits::pct,true);  //slightly close claw
+  Lift.rotateFor(42, vex::rotationUnits::deg, 30, vex::velocityUnits::pct,true); //lift claw to mid-cube
   Lift.resetRotation();   //make position home
   Claw.resetRotation();   //make position home 
 }//end  homeClaw(void);
