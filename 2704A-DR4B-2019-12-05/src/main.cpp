@@ -1,5 +1,4 @@
 /*----------------------------------------------------------------------------*/
-//  First Autonomous Vesion 2 - use motor_group for Lift
 //  NOTES.TXT FOR NOTES / USEFUL SETTINGS
 /*----------------------------------------------------------------------------*/
 
@@ -16,7 +15,6 @@ void pre_auton(void);            // SETTINGS FOR MOTORS, SCREEN ETC
 void setUpMotor(motor(M), char); // default motor settings
 int updateScreen();              // DISPLAY ENCODER TASK
 int tLift();                     // arm-relatecd tasks / buttons
-
 void homeClaw(void);             //set claw height and open position (home)
 
 
@@ -69,15 +67,10 @@ void usercontrol(void) {
       adjSpeed = 1.0;
     }
 
-    L_Drive.spin(directionType::fwd,
-                 (Controller1.Axis1.value() + Controller1.Axis2.value()) *
-                     adjSpeed,
-                 velocityUnits::pct);
-    R_Drive.spin(directionType::fwd,
-                 (Controller1.Axis1.value() - Controller1.Axis2.value()) *
-                     adjSpeed,
-                 velocityUnits::pct);
-
+    L_Drive.spin(directionType::fwd,(Controller1.Axis1.value() + Controller1.Axis2.value()) * adjSpeed,velocityUnits::pct);
+    R_Drive.spin(directionType::fwd,(Controller1.Axis1.value() - Controller1.Axis2.value()) * adjSpeed,velocityUnits::pct);
+  
+    //MICRO-MOVES
     if (Controller1.ButtonX.pressing()) { // move fwd
       sDrive(15, 15);
     } else if (Controller1.ButtonB.pressing()) { // move back
@@ -88,17 +81,16 @@ void usercontrol(void) {
       sDrive(15, -15);
     }
 
-    vex::task::sleep(100); // Sleep the task for a short amount of time to
-                           // prevent wasted resources.
+    vex::task::sleep(100); // Sleep the task for a short amount of time to prevent wasted resources.
 
   } // end while
 }
 
 int tLift(void) { // ARM & CLAW TASK
   while (1) {
-    if (Controller1.Axis3.value() > deadBand && Lift.position(vex::rotationUnits::deg) < 500) { // lift
+    if (Controller1.Axis3.value() > deadBand && Lift.position(vex::rotationUnits::deg) < 500) { // RAISE LIFT W/SOFT LIMIT OF 500 DEG
       Lift.spin(vex::directionType::fwd, Controller1.Axis3.value() * adjLift,vex::velocityUnits::pct);
-    } else if (Controller1.Axis3.value() < deadBand * -1.0 && Lift.position(vex::rotationUnits::deg) > 0) { // lift
+    } else if (Controller1.Axis3.value() < deadBand * -1.0 && Lift.position(vex::rotationUnits::deg) > 0) { // SLOWLY-LOWER LIFT W/SOFT LIMITS AT 0 DEG
       Lift.spin(vex::directionType::fwd, Controller1.Axis3.value() * (adjLift * 0.15),vex::velocityUnits::pct);
     } else if (Controller1.ButtonL1.pressing()) { // claw open
       Claw.spin(vex::directionType::fwd, 75, vex::velocityUnits::pct);
@@ -165,8 +157,8 @@ void openClaw(void) {
 } // end rClaw
 
 void homeClaw(void){
-  Lift.rotateFor(70, vex::rotationUnits::deg, 50, vex::velocityUnits::pct,false); //lift claw to mid-cube
   Claw.rotateFor(5, vex::rotationUnits::deg, 50, vex::velocityUnits::pct,false);  //slightly close claw
+  Lift.rotateFor(70, vex::rotationUnits::deg, 50, vex::velocityUnits::pct,false); //lift claw to mid-cube
   Lift.resetRotation();   //make position home
   Claw.resetRotation();   //make position home 
 }//end  homeClaw(void);
