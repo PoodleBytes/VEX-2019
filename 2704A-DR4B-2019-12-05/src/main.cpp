@@ -2,7 +2,7 @@
 //  First Autonomous Vesion 2 - use motor_group for Lift
 //  NOTES.TXT FOR NOTES / USEFUL SETTINGS
 /*----------------------------------------------------------------------------*/
-//73,520
+
 #include "vex.h"
 
 using namespace vex;
@@ -16,27 +16,33 @@ void pre_auton(void);            // SETTINGS FOR MOTORS, SCREEN ETC
 void setUpMotor(motor(M), char); // default motor settings
 int updateScreen();              // DISPLAY ENCODER TASK
 int tLift();                     // arm-relatecd tasks / buttons
-void openClaw(void);             // open claw
-void closeClaw(double);          // close claw (speed)
+
+void homeClaw(void);             //set claw height and open position (home)
+
 
 // VARIABLES
 double adjField = 1.0; // adjust automomouse for different fields
 double adjSpeed = 1.0; // adjust drive sensitivity
 double adjLift = 1.0;  // adjust arm's sensitivity
 int deadBand = 10;     // range below which joystick is ignored
-bool encode =
-    1; // set to true (1) will displays encoders on controller, false will not
+bool encode = 1; // set to true (1) will displays encoders on controller, false will not
 
 // MOVEMENT / CONTROL
 void rDrive(double, double, double, double, bool); // DRIVE BY RELATIVE DISTANCE
 void rLift(double, double, bool);                  // ARM BY RELATIVE DISTANCE
 void aLift(double, double, bool);                  // ARM BY ABSOLUTE DISTANCE
-void sDrive(double, double);
+void sDrive(double, double);                       //drive by spinning
+void openClaw(void);                              // open claw
+void closeClaw(double);                           // close claw (speed)
 
 motor_group Lift(L_Lift, R_Lift); // makes 2 lift motors act as one
 
 void autonomous(void) {
-  // USE AUTONOMOUS.TXT TO COPY/PASTE AUTONOMOUS
+  //position claw - DO NOT REMOVE
+  homeClaw();   
+  // USE AUTONOMOUS.TXT TO COPY/PASTE AUTONOMOUS VELOW
+
+
 
 } // end autonomous
 
@@ -90,13 +96,10 @@ void usercontrol(void) {
 
 int tLift(void) { // ARM & CLAW TASK
   while (1) {
-    if (Controller1.Axis3.value() > deadBand) { // lift
-      Lift.spin(vex::directionType::fwd, Controller1.Axis3.value() * adjLift,
-                vex::velocityUnits::pct);
-    } else if (Controller1.Axis3.value() < deadBand * -1.0) { // lift
-      Lift.spin(vex::directionType::fwd,
-                Controller1.Axis3.value() * (adjLift * 0.15),
-                vex::velocityUnits::pct);
+    if (Controller1.Axis3.value() > deadBand && Lift.position(vex::rotationUnits::deg) < 500) { // lift
+      Lift.spin(vex::directionType::fwd, Controller1.Axis3.value() * adjLift,vex::velocityUnits::pct);
+    } else if (Controller1.Axis3.value() < deadBand * -1.0 && Lift.position(vex::rotationUnits::deg) > 0) { // lift
+      Lift.spin(vex::directionType::fwd, Controller1.Axis3.value() * (adjLift * 0.15),vex::velocityUnits::pct);
     } else if (Controller1.ButtonL1.pressing()) { // claw open
       Claw.spin(vex::directionType::fwd, 75, vex::velocityUnits::pct);
     } else if (Controller1.ButtonL2.pressing()) { // claw close
@@ -105,8 +108,7 @@ int tLift(void) { // ARM & CLAW TASK
       closeClaw(70);
     } else if (Controller1.ButtonR2.pressing()) { // claw close
       openClaw();
-    } else if (Controller1.ButtonUp
-                   .pressing()) { // move 'bot as arm lifts to minimize offset
+    } else if (Controller1.ButtonUp.pressing()) { // move 'bot as arm lifts to minimize offset
       Lift.spin(vex::directionType::fwd, 30, vex::velocityUnits::pct);
     } else if (Controller1.ButtonDown.pressing()) {
       Lift.spin(vex::directionType::rev, 30, vex::velocityUnits::pct);
@@ -119,13 +121,10 @@ int tLift(void) { // ARM & CLAW TASK
   return 0;
 } // end tLift
 
-void rDrive(double lDeg, double rDeg, double l, double r,
-            bool b) { // drive by relative distance
+void rDrive(double lDeg, double rDeg, double l, double r, bool b) { // drive by relative distance
   rDeg = rDeg * -1;
-  L_Drive.rotateFor(lDeg * adjField, vex::rotationUnits::deg, l,
-                    vex::velocityUnits::pct, false);
-  R_Drive.rotateFor(rDeg * adjField, vex::rotationUnits::deg, r,
-                    vex::velocityUnits::pct, b);
+  L_Drive.rotateFor(lDeg * adjField, vex::rotationUnits::deg, l,vex::velocityUnits::pct, false);
+  R_Drive.rotateFor(rDeg * adjField, vex::rotationUnits::deg, r,vex::velocityUnits::pct, b);
 } // end rDrive
 
 void sDrive(double lValue, double rValue) { // drive by spin
@@ -135,8 +134,7 @@ void sDrive(double lValue, double rValue) { // drive by spin
 } // end rDrive
 
 void aLift(double deg, double s, bool b) { // position lift by absolute position
-  Lift.rotateTo(deg, vex::rotationUnits::deg, s, vex::velocityUnits::pct,
-                false); // This command must be non blocking.
+  Lift.rotateTo(deg, vex::rotationUnits::deg, s, vex::velocityUnits::pct,false); // This command must be non blocking.
 
   if (b) { // b = tue means wait for motors stop spinning or timeout
     while (Lift.isSpinning()) {
@@ -145,8 +143,7 @@ void aLift(double deg, double s, bool b) { // position lift by absolute position
 } // end aArm
 
 void rLift(double deg, double s, bool b) { // position lift by relative position
-  Lift.rotateFor(deg, vex::rotationUnits::deg, s, vex::velocityUnits::pct,
-                 false); // This command must be non blocking.
+  Lift.rotateFor(deg, vex::rotationUnits::deg, s, vex::velocityUnits::pct,false); // This command must be non blocking.
 
   if (b) { // b = tue means wait for motors stop spinning or timeout
     while (Lift.isSpinning()) {
@@ -154,7 +151,7 @@ void rLift(double deg, double s, bool b) { // position lift by relative position
   }
 } // end eArm
 
-void closeClaw(double s) {
+void closeClaw(double s) {  
   do {
     Claw.spin(vex::directionType::fwd, s, vex::velocityUnits::pct);
   } while (Claw.current(vex::percentUnits::pct) < 35);
@@ -163,9 +160,16 @@ void closeClaw(double s) {
 
 void openClaw(void) {
   Claw.setVelocity(75, pct);
-  Claw.spinTo(5, deg); // spin to home position
+  Claw.spinTo(0, deg); // spin to home position
   Claw.stop(brake);
 } // end rClaw
+
+void homeClaw(void){
+  Lift.rotateFor(70, vex::rotationUnits::deg, 50, vex::velocityUnits::pct,false); //lift claw to mid-cube
+  Claw.rotateFor(5, vex::rotationUnits::deg, 50, vex::velocityUnits::pct,false);  //slightly close claw
+  Lift.resetRotation();   //make position home
+  Claw.resetRotation();   //make position home 
+}//end  homeClaw(void);
 
 // SYSTEM SET-UP
 void pre_auton(void) {
