@@ -40,15 +40,20 @@ void autonomous(void) {
   homeClaw();  
 
   //auto - 4point blue - temp
-  rDrive(140, 140, 40, 40, 1);    //drive to near cube
+  rDrive(160, 160, 40, 40, 1);    //drive to near cube
   closeClaw(70);                  
-  rLift(220, 60, 1);            //lift cube
-  rDrive(570, 570, 40, 40, 1);  //drive to stack
+  rLift(240, 60, 1);            //lift cube
+  rDrive(600, 600, 40, 40, 1);  //drive to stack
+  rLift(-40,20,1);
   openClaw();
-  rLift(-215, 20, 1);           //lower lift
+  rLift(-160, 20, 1);           //lower lift
   closeClaw(75);
-  rLift(40, 80, 1);             //lift stack
-  rDrive(600, -600, 40, 40, 1); //turn toward corner
+  rLift(55, 80, 1);
+  rDrive(-120,-120,40,40,1);             //lift stack
+  rDrive(407, -407, 40, 40, 1); //turn toward corner
+  rDrive(1220,1220,40,40,1);
+  rLift(-155,20,1);
+  rDrive(-160,-160,40,40,1);
 
  
   
@@ -66,7 +71,6 @@ void autonomous(void) {
 
 void usercontrol(void) {
   // ONE TIME COMMANDS RAN B4 USER CONTROL
-  homeClaw();
   // START TASK for LIFT
   vex::task t(tLift); // start task which updates controller screen
 

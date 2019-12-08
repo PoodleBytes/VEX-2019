@@ -39,38 +39,29 @@ void autonomous(void) {
     //position claw - DO NOT REMOVE
   homeClaw();  
 
-  //auto - 4point blue - temp
-  rDrive(140, 140, 40, 40, 1);    //drive to near cube
-  closeClaw(70);                  
-  rLift(220, 60, 1);            //lift cube
-  rDrive(570, 570, 40, 40, 1);  //drive to stack
-  openClaw();
-  rLift(-215, 20, 1);           //lower lift
-  closeClaw(75);
-  rLift(40, 80, 1);             //lift stack
-  rDrive(600, -600, 40, 40, 1); //turn toward corner
 
- 
-  
-/*   // USE AUTONOMOUS.TXT TO COPY/PASTE AUTONOMOUS VELOW
+  /* // USE AUTONOMOUS.TXT TO COPY/PASTE AUTONOMOUS VELOW
   rDrive(1200, 1200, 75, 75, 1);
   rDrive(-160, -160, 50, 50, 1);
   rDrive(-420, 420, 40, 40, 1); //TURN LEFT 90DEG
   rDrive(195, 195, 30, 30, 1);
   closeClaw(50);
   rLift(30, 40, 1);
-   rDrive(-500, 500, 50, 50, 1); */
+   rDrive(-500, 500, 50, 50, 1); */ 
+/*** PRE DR4B AUTONOMOUS **/
+ 
+ rDrive(370,370,40,40,1);
+ rDrive(-370,-370,40,40,1);
 
+;
 
 } // end autonomous
 
 void usercontrol(void) {
   // ONE TIME COMMANDS RAN B4 USER CONTROL
-  homeClaw();
   // START TASK for LIFT
   vex::task t(tLift); // start task which updates controller screen
-
-  // START DISPLAY ENCODER TO CONTROLLER TASK
+   // START DISPLAY ENCODER TO CONTROLLER TASK
   if (encode) {
     vex::task upScr(updateScreen); // start task
     upScr.setPriority(4);          // set low priority
@@ -108,10 +99,10 @@ void usercontrol(void) {
 
 int tLift(void) { // ARM & CLAW TASK
   while (1) {
-    if (Controller1.Axis3.value() > deadBand && Lift.position(vex::rotationUnits::deg) < 500) { // RAISE LIFT W/SOFT LIMIT OF 500 DEG
+    if (Controller1.Axis3.value() > deadBand) { 
       Lift.spin(vex::directionType::fwd, Controller1.Axis3.value() * adjLift,vex::velocityUnits::pct);
-    } else if (Controller1.Axis3.value() < deadBand * -1.0 && Lift.position(vex::rotationUnits::deg) > 0) { // SLOWLY-LOWER LIFT W/SOFT LIMITS AT 0 DEG
-      Lift.spin(vex::directionType::fwd, Controller1.Axis3.value() * (adjLift * 0.15),vex::velocityUnits::pct);
+    } else if (Controller1.Axis3.value() < deadBand * -1.0) {
+      Lift.spin(vex::directionType::fwd, Controller1.Axis3.value() * (adjLift * 0.15),vex::velocityUnits::pct); 
     } else if (Controller1.ButtonL1.pressing()) { // claw open
       Claw.spin(vex::directionType::fwd, 75, vex::velocityUnits::pct);
     } else if (Controller1.ButtonL2.pressing()) { // claw close
