@@ -1,0 +1,12 @@
+https://api.vexcode.cloud/v5/html/classvex_1_1sonar.html
+
+vex.h
+#include <vex_triport.h>  //PER API - NOT SURE NEEDED
+
+r-cfg.h
+extern sonar Dist;
+
+r-cfg.cpp
+// VEXcode device constructors
+sonar Dist = sonar(Brain.ThreeWirePort.A);
+
