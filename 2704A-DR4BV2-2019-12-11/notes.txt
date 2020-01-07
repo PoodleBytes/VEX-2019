@@ -1,0 +1,41 @@
+============================================================
+autonomous settings:
+
+  DRIVE
+  rDrive(-360,360,50,50,1); //turns left (left rotation, right rotate, left speed, right speed, wait until finished before next step )
+  rDrive(360,360,50,50,1); //DRIVE FORWARD ABOUT 12" (one rotation)
+
+  LIFT
+  rLift(360,75,1);  //lifts arm about 10"  (rotate 360 degrees, 75 percent speed, wait until finished before next step)
+  
+  CLAW
+  closeClaw(0.75);  //closes claw (3/4 of a second) - may need to adjust time
+  openClaw(); //opens claw to start position
+
+==========================================================
+        CHANGE LOG
+12-11
+  - bad port 8
+  - add M_Drive (middle motor)
+  - add sonar Dist
+12-04 - ***  changed to DR4B lift  ***
+    removed old bot-specific code 
+    added DR4B specific code
+       - slow lift going down 
+       - soft-limits on lift max/min
+       - position claw on auonomous
+       - close claw based on current
+10-29
+      - added motor_group Lift
+      - added BtnUp / BtnDwn to move robot and arm to minimize offset
+
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// L_Drive              motor         20              
+// R_Drive              motor         11              
+// L_Lift               motor         8               
+// R_Lift               motor         5               
+// Claw                 motor         15    
+// ---- END VEXCODE CONFIGURED DEVICES ----
