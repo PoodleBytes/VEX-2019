@@ -132,10 +132,10 @@ int read_sonar(void){           //read sonar task
   while(1){
     dist_mm = Dist.distance(vex::distanceUnits::mm);
 
-    if(dist_mm < dist2Grab + 10 && dist_mm > dist2Grab - 10 & Lift.rotation(rotationUnits::deg) > 50.0){   //distance to target within 20mm
+    if(dist_mm < dist2Cube + 10 && dist_mm > dist2Cube - 10 & Lift.rotation(rotationUnits::deg) > 50.0){   //distance to target within 20mm
       Controller1.rumble(".");            //short rumble
       wait(1, seconds);
-    }else if(dist_mm < dist2Grab - 10 & Lift.rotation(rotationUnits::deg) > 50.0){     //too close
+    }else if(dist_mm < dist2Cube - 10 & Lift.rotation(rotationUnits::deg) > 50.0){     //too close
       Controller1.rumble("-");           //long rumble
       wait(1, seconds);
     }  
@@ -238,7 +238,7 @@ void openClaw(void) {
 
 void homeClaw(void){
   Claw.rotateFor(40, vex::rotationUnits::deg, 50, vex::velocityUnits::pct,true);  //slightly close claw
-  Lift.rotateFor(42, vex::rotationUnits::deg, 30, vex::velocityUnits::pct,true); //lift claw to mid-cube
+  Lift.rotateFor(42, vex::rotationUnits::deg, 25, vex::velocityUnits::pct,true); //lift claw to mid-cube
   Lift.resetRotation();   //make position home
   Claw.resetRotation();   //make position home 
 }//end  homeClaw(void);
