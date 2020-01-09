@@ -113,9 +113,9 @@ int tLift(void) { // ARM & CLAW TASK
     } else if (Controller1.ButtonL2.pressing() && Claw.current(vex::percentUnits::pct) < 50) { // claw close
           Claw.spin(vex::directionType::rev, 75, vex::velocityUnits::pct);
     } else if (Controller1.ButtonR1.pressing()) { // claw close
-      closeClaw(70);
+      grabCube(1);
     } else if (Controller1.ButtonR2.pressing()) { // claw open
-      openClaw(0);
+      grabCube(4);
     } else if (Controller1.ButtonUp.pressing()) { // move 'bot as arm lifts to minimize offset
       Lift.spin(vex::directionType::fwd, 30, vex::velocityUnits::pct);
     } else if (Controller1.ButtonDown.pressing()) {
