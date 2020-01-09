@@ -18,7 +18,7 @@ autonomous settings:
   - limit open & closing claw (Btn L1 & L2)
 12-11
   - bad port 8
-  - add M_Drive (middle motor)
+  - add M_Drive (H-Drive using middle motor)
   - add sonar to read distance:
       drive2Target(int) - drive to sonar value (distMM) from target 
       int dist2Cube = distance sonar reading to grab cube
