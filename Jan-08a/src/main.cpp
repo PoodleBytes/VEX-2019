@@ -22,21 +22,20 @@ int read_sonar(void);            // read sonar task
 double adjField = 1.0; // adjust automomouse for different fields
 double adjSpeed = 1.0; // adjust drive sensitivity
 double adjLift = 0.8;  // adjust arm's sensitivity
-double dist_mm;
+double dist_mm;        //sonar distance in mm
 int deadBand = 10; // range below which joystick is ignored
-bool encode =
-    1; // set to true (1) will displays encoders on controller, false will not
+bool display = 1; // set to true (1) will displays encoders on controller, false will not
 int dist2Cube = 160; // mm to grab cube
 
 // MOVEMENT / CONTROL
 void rDrive(double, double, double, double, bool); // DRIVE BY RELATIVE DISTANCE
-void sDrive(double, double);                       // drive by spinning
-void mDrive(int);                                  // drive sideways
+void sDrive(double, double);                       // drive by spinning (speed L, speed r)
+void mDrive(int);                                  // drive sideways (speed)
 void rLift(double, double, bool); // ARM BY RELATIVE DISTANCE (deg, speed, wait)
-void aLift(double, double, bool); // ARM BY ABSOLUTE DISTANCE
+void aLift(double, double, bool); // ARM BY ABSOLUTE DISTANCE (deg, speed, wait)
 void openClaw(void);              // open claw
 void closeClaw(double);           // close claw (speed)
-void drive2Target(double);        // drive until (mm) from target
+void drive2Target(double);        // drive to target (distance in mm)
 
 void autonomous(void) {
   // position claw - DO NOT REMOVE
@@ -55,20 +54,22 @@ void usercontrol(void) {
   // START TASK for LIFT
   vex::task t(tLift); // start task which updates controller screen
   t.setPriority(6);
-  vex::task r_d(read_sonar);
-  r_d.setPriority(6);
+
+  //START TASK TO READ SONAR (DISTANCE)
+  vex::task dst(read_sonar);
+  dst.setPriority(6);
 
   // START DISPLAY ENCODER TO CONTROLLER TASK
-  if (encode) {
-    vex::task upScr(updateScreen); // start task
-    upScr.setPriority(3);          // set low priority
+  if (display) {
+    vex::task dsp(updateScreen); // start task
+    dsp.setPriority(3);          // set low priority
   }
 
   while (1) {
     // DRIVE
 
-    if (abs(Controller1.Axis1.value() + Controller1.Axis2.value()) < 120 && abs(Controller1.Axis1.value() - Controller1.Axis2.value()) < 120) {
-      adjSpeed = 0.3; // ADJUST LOW-SPPED SENSITIVITY  0.2 LESS SENSITIVE, 0.5 MORE SO
+    if (abs(Controller1.Axis1.value() + Controller1.Axis2.value()) < 120 && abs(Controller1.Axis1.value() - Controller1.Axis2.value()) < 110) {
+      adjSpeed = 0.3; // ADJUST LOW-SPEED SENSITIVITY  0.2 LESS SENSITIVE, 0.5 MORE SO
     } else {
       adjSpeed = 1.0;
     }
@@ -78,18 +79,18 @@ void usercontrol(void) {
     R_Drive.spin(directionType::fwd,(Controller1.Axis1.value() - Controller1.Axis2.value()) * adjSpeed,  velocityUnits::pct);
 
     //MIDDLE DRIVE
-    if(abs(Controller1.Axis4.value()) > 25){
+    if(abs(Controller1.Axis4.value()) > 25){    //'deadband for raising claw 
       M_Drive.spin(directionType::fwd, Controller1.Axis4.value() * 0.4, velocityUnits::pct);}
 
     // MICRO-MOVES
     if (Controller1.ButtonX.pressing()) { // move fwd
-      sDrive(-15, -15);
-    } else if (Controller1.ButtonB.pressing()) { // move back
       sDrive(15, 15);
-    } else if (Controller1.ButtonY.pressing()) { // move left
-      sDrive(15, -15);
-    } else if (Controller1.ButtonA.pressing()) { // move right
+    } else if (Controller1.ButtonB.pressing()) { // move back
+      sDrive(-15, -15);
+    } else if (Controller1.ButtonY.pressing()) { // turn left
       sDrive(-15, 15);
+    } else if (Controller1.ButtonA.pressing()) { // turn right
+      sDrive(15, -15);
     } else if (Controller1.ButtonLeft.pressing()) { // move right
       mDrive(-5);
     } else if (Controller1.ButtonRight.pressing()) { // move right
@@ -151,10 +152,10 @@ void rDrive(double lDeg, double rDeg, double l, double r, bool b) { // drive by 
   R_Drive.rotateFor(rDeg * adjField, vex::rotationUnits::deg, r, vex::velocityUnits::pct, b);
 } // end rDrive
 
-void sDrive(double lValue, double rValue) { // drive by spin
-  lValue = lValue * -1;
-  L_Drive.spin(vex::directionType::fwd, lValue, vex::velocityUnits::pct);
-  R_Drive.spin(vex::directionType::fwd, rValue, vex::velocityUnits::pct);
+void sDrive(double lSpeed, double rSpeed) { // drive by spin
+  rSpeed = rSpeed * -1;
+  L_Drive.spin(vex::directionType::fwd, lSpeed, vex::velocityUnits::pct);
+  R_Drive.spin(vex::directionType::fwd, rSpeed, vex::velocityUnits::pct);
 } // end sDrive
 
 void drive2Target(double D) { // drive by spin
@@ -194,14 +195,14 @@ void drive2Target(double D) { // drive by spin
   }
 } // end drive2Target
 
-void mDrive(int s) { // middle drive by spin
+void mDrive(int speed) { // middle drive by spin
 
-  M_Drive.spin(vex::directionType::fwd, s, vex::velocityUnits::pct);
+  M_Drive.spin(vex::directionType::fwd, speed, vex::velocityUnits::pct);
 
 } // end sDrive
 
-void aLift(double deg, double s, bool b) { // position lift by absolute position
-  Lift.rotateTo(deg, vex::rotationUnits::deg, s, vex::velocityUnits::pct, false); // This command must be non blocking.
+void aLift(double deg, double speed, bool b) { // position lift by absolute position
+  Lift.rotateTo(deg, vex::rotationUnits::deg, speed, vex::velocityUnits::pct, false); // This command must be non blocking.
 
   if (b) { // b = tue means wait for motors stop spinning or timeout
     while (Lift.isSpinning()) {
@@ -209,8 +210,8 @@ void aLift(double deg, double s, bool b) { // position lift by absolute position
   }
 } // end aArm
 
-void rLift(double deg, double s, bool b) { // position lift by relative position
-  Lift.rotateFor(deg, vex::rotationUnits::deg, s, vex::velocityUnits::pct, false); // This command must be non blocking.
+void rLift(double deg, double speed, bool b) { // position lift by relative position
+  Lift.rotateFor(deg, vex::rotationUnits::deg, speed, vex::velocityUnits::pct, false); // This command must be non blocking.
 
   if (b) { // b = tue means wait for motors stop spinning or timeout
     while (Lift.isSpinning()) {
@@ -218,9 +219,9 @@ void rLift(double deg, double s, bool b) { // position lift by relative position
   }
 } // end eArm
 
-void closeClaw(double s) {
+void closeClaw(double speed) {
   do {
-    Claw.spin(vex::directionType::fwd, s, vex::velocityUnits::pct);
+    Claw.spin(vex::directionType::fwd, speed, vex::velocityUnits::pct);
   } while (Claw.current(vex::percentUnits::pct) < 50);
   Claw.stop(hold);
 } // end rClaw
@@ -282,7 +283,7 @@ int updateScreen() {
   while (1) {
     Controller1.Screen.clearScreen();
     Controller1.Screen.setCursor(1, 1);
-    Controller1.Screen.print("L: %4i R: %4i", L_Drive.rotation(rotationUnits::deg),R_Drive.rotation(rotationUnits::deg)); // LEFT, RIGHT MOTOR
+    Controller1.Screen.print("L: %4i R: %4i", L_Drive.rotation(rotationUnits::deg), R_Drive.rotation(rotationUnits::deg)); // LEFT, RIGHT MOTOR
     Controller1.Screen.setCursor(2, 1);
     Controller1.Screen.print("L: %4i C: %4i", Lift.rotation(rotationUnits::deg), Claw.rotation(rotationUnits::deg)); // LIFT CLAW
     Controller1.Screen.setCursor(3, 1);
