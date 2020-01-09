@@ -1,3 +1,9 @@
+CONTROLS
+Joystick:  right - drive   :    left - lift, H-Drive
+  right 4 buttons - micro-drive
+  left 4 buttons - micro lift, h-drive
+  left up/down - open/close claw
+
 ============================================================
 autonomous settings:
 
@@ -9,11 +15,13 @@ autonomous settings:
   rLift(360,75,1);  //lifts arm about 10"  (rotate 360 degrees, 75 percent speed, wait until finished before next step)
   
   CLAW
-  closeClaw(0.75);  //closes claw (3/4 of a second) - may need to adjust time
-  openClaw(); //opens claw to start position
+  closeClaw(speed);  //closes claw (3/4 of a second) - may need to adjust time
+  openClaw(absolute position - deg); //opens claw to start position
 
 ==========================================================
         CHANGE LOG
+01-09
+  - add grabCude() - grab a cube automatically
 01-08
   - limit open & closing claw (Btn L1 & L2)
 12-11
