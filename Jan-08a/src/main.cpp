@@ -135,7 +135,7 @@ int read_sonar(void) { // read sonar task
     if (dist_mm < dist2Cube + 10 && dist_mm > dist2Cube - 10 & Lift.rotation(rotationUnits::deg) > 50.0) { // distance to target within 20mm
       Controller1.rumble(".");                 // short rumble
       wait(1, seconds);
-    } else if (dist_mm < dist2Cube - 10 & Lift.rotation(rotationUnits::deg)> 50.0) { // too close
+    } else if (dist_mm < dist2Cube - 10 && Lift.rotation(rotationUnits::deg)> 50.0) { // too close
       Controller1.rumble("--");                                    // long rumble
       wait(1, seconds);
     }
