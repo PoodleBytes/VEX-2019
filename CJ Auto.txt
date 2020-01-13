@@ -1,0 +1,25 @@
+
+
+// VARIABLES
+double adjField = 1.0; // adjust automomouse for different fields
+double adjSpeed = 1.0; // adjust drive sensitivity
+double adjLift = 0.8;  // adjust arm's sensitivity
+double dist_mm;
+int deadBand = 10;     // range below which joystick is ignored
+bool encode = 1; // set to true (1) will displays encoders on controller, false will not
+int dist2Cube = 160;    //mm to grab cube
+
+// MOVEMENT / CONTROL
+void rDrive(double, double, double, double, bool); // DRIVE BY RELATIVE DISTANCE
+void sDrive(double, double);                       //drive by spinning
+void mDrive(int);                                    //drive sideways
+void rLift(double, double, bool);                  // ARM BY RELATIVE DISTANCE (deg, speed, wait)
+void aLift(double, double, bool);                  // ARM BY ABSOLUTE DISTANCE
+void openClaw(void);                              // open claw
+void closeClaw(double);                           // close claw (speed)
+void drive2Target(double);                      //drive until (mm) from target
+
+void autonomous(void) {
+rDrive(124,124,32,32,1);
+
+}
