@@ -28,7 +28,7 @@ bool display = 1; // set to true (1) will displays encoders on controller, false
 int dist2Cube = 160; // mm to grab cube
 
 // MOVEMENT / CONTROL
-void rDrive(double, double, double, double, bool); // DRIVE BY RELATIVE DISTANCE
+void rDrive(double, double, double, double, bool); // DRIVE BY RELATIVE DISTANCE(L deg, R deg, L speed, R speed, wait)
 void sDrive(double, double);                       // drive by spinning (speed L, speed r)
 void mDrive(int);                                  // drive sideways (speed)
 void rLift(double, double, bool); // LIFT BY RELATIVE DISTANCE (deg, speed, wait)
@@ -36,7 +36,7 @@ void aLift(double, double, bool); // LIFT BY ABSOLUTE DISTANCE (deg, speed, wait
 void openClaw(int);              // open claw (deg)
 void closeClaw(double);           // close claw (speed)
 void drive2Target(double);        // drive to target (distance in mm)
-void grabCube( int);    //GRAB CUBE - (# OF CUBES)
+void grabCube(int);    //GRAB CUBE - (# OF CUBES)
 
 void autonomous(void) {
   // position claw - DO NOT REMOVE
@@ -240,7 +240,7 @@ void homeClaw(void) {
 } // end  homeClaw(void);
 
 void grabCube(int n){
-  int liftTo = 0;
+  int liftTo = 0;   //degrees to lift claw
 
   switch(n)
   {
@@ -260,7 +260,7 @@ void grabCube(int n){
 
   aLift(liftTo, 40, 1);        // lift claw so sensor can 'see'
   drive2Target(dist2Cube); // NEW - drive to about dist2Cube from next cube
-  openClaw(Claw.rotation(deg)-20);  //open claw current position - 20 deg
+  Claw.rotateFor(20, vex::rotationUnits::deg, 50, vex::velocityUnits::pct, 1); // //open claw a little
   aLift(0, 20, 1);  //lower lift to start (home) position
   closeClaw(50);  //close claw 50% speed
   aLift(50, 40, 1);        // lift claw so sensor can 'see'
