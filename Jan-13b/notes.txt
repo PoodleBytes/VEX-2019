@@ -21,8 +21,11 @@ autonomous settings:
 
 ==========================================================
         CHANGE LOG
+01-13
+  - moved display & sonar task to main()
+  - started autonomous 1  
 01-09
-  - add grabCude() - grab a cube automatically
+  - add grabCube() - grab a cube automatically
 01-08
   - limit open & closing claw (Btn L1 & L2)
 12-11

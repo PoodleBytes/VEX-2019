@@ -33,6 +33,7 @@ void sDrive(double, double);                       // drive by spinning (speed L
 void mDrive(int);                                  // drive sideways (speed)
 void rLift(double, double, bool); // LIFT BY RELATIVE DISTANCE (deg, speed, wait)
 void aLift(double, double, bool); // LIFT BY ABSOLUTE DISTANCE (deg, speed, wait)
+void rClaw(double, double, bool); // LIFT BY ABSOLUTE DISTANCE (deg, speed, wait)
 void openClaw(int);              // open claw (deg)
 void closeClaw(double);           // close claw (speed)
 void drive2Target(double);        // drive to target (distance in mm)
@@ -42,7 +43,15 @@ void autonomous(void) {
   // position claw - DO NOT REMOVE
   homeClaw();              // NEED TO VERIFY!!
   closeClaw(30);          //grab preload cube
-  drive2Target(dist2Cube);
+  aLift(60, 40, 1);        // lift claw so sensor can 'see'
+  drive2Target(dist2Cube); // NEW - drive to about dist2Cube from next cube
+  rLift(-20,20,1);  //lower cube to almost touch targer cube
+  rClaw(20,30,1);   //open claw a little
+  rLift(-40,20,1);  //lower claw to grab cube
+
+  //aLift(0, 20, 1);  //lower lift to start (home) position60
+  closeClaw(30);  //close claw 50% speed
+  aLift(60, 20, 1);        // lift claw so sensor can 'see'
   // to trygrabCube(1);         //EXP - GRAB NEXT - SINGLE  CUBE
   // more code....
   // turn toward wall......
@@ -260,10 +269,13 @@ void grabCube(int n){
 
   aLift(liftTo, 40, 1);        // lift claw so sensor can 'see'
   drive2Target(dist2Cube); // NEW - drive to about dist2Cube from next cube
-  openClaw(Claw.rotation(deg)-20);  //open claw current position - 20 deg
-  aLift(0, 20, 1);  //lower lift to start (home) position
-  closeClaw(50);  //close claw 50% speed
-  aLift(50, 40, 1);        // lift claw so sensor can 'see'
+  rLift(-20,20,1);  //lower cube to almost touch targer cube
+  rClaw(20,30,1);   //open claw a little
+  rLift(-25,20,1);
+
+  //aLift(0, 20, 1);  //lower lift to start (home) position
+  closeClaw(30);  //close claw 50% speed
+  aLift(60, 20, 1);        // lift claw so sensor can 'see'
 }
 
 // SYSTEM SET-UP
@@ -343,6 +355,7 @@ int main() {
   //START TASK TO READ SONAR (DISTANCE)
   vex::task dst(read_sonar);
   dst.setPriority(6);
+
   // START DISPLAY ENCODER TO CONTROLLER TASK
   if (display) {
     vex::task dsp(updateScreen); // start task
