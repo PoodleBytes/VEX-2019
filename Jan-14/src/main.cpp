@@ -41,21 +41,42 @@ void grabCube( int);    //GRAB CUBE - (# OF CUBES)
 
 void autonomous(void) {
   // position claw - DO NOT REMOVE
-  homeClaw();              // NEED TO VERIFY!!
-  closeClaw(30);          //grab preload cube
-  aLift(60, 40, 1);        // lift claw so sensor can 'see'
-  drive2Target(dist2Cube); // NEW - drive to about dist2Cube from next cube
-  rLift(-20,20,1);  //lower cube to almost touch targer cube
-  rClaw(20,30,1);   //open claw a little
-  rLift(-40,20,1);  //lower claw to grab cube
 
-  //aLift(0, 20, 1);  //lower lift to start (home) position60
-  closeClaw(30);  //close claw 50% speed
-  aLift(60, 20, 1);        // lift claw so sensor can 'see'
-  // to trygrabCube(1);         //EXP - GRAB NEXT - SINGLE  CUBE
-  // more code....
+  homeClaw();              // NEED TO VERIFY!!
+//moved to homeClaw:  closeClaw(40);          //grab preload cube
+  aLift(80, 40, 1);        // lift claw so sensor can 'see'
+  wait(0.5,seconds);
+  
+  drive2Target(dist2Cube); // NEW - drive to about dist2Cube from next cube
+  rLift(-40,20,1);  //lower cube to almost touch targer cube
+  openClaw(75);   //open claw a little
+  aLift(0,20,1);
+  closeClaw(30); 
+  aLift(80, 40, 1);        // lift claw so sensor can 'see' 
+
+
+  rDrive(400,400, 30, 30, 1);
+  wait(0.25,seconds);
+  rDrive(360,-360, 30, 30, 1);    //*turn right *
+
+
+  drive2Target(dist2Cube); // NEW - drive to about dist2Cube from next cube
+  rLift(-40,20,1);  //lower cube to almost touch targer cube
+  openClaw(75);   //open claw a little
+  aLift(0,20,1);
+  closeClaw(30); 
+  aLift(80, 40, 1);        // lift claw so sensor can 'see' 
+
+/*  rLift(-40,20,1);  //lower cube to almost touch targer cube
+  openClaw(75);   //open claw a little
+  aLift(0,20,1);
+  closeClaw(40); 
+  aLift(80, 40, 1);        // lift claw so sensor can 'see' 
+
+  */
+
   // turn toward wall......
-  drive2Target(300); // Driver to 12" (300mm) from wall
+  //drive2Target(300); // Driver to 12" (300mm) from wall
 
 } // end autonomous
 
@@ -97,6 +118,15 @@ void usercontrol(void) {
       mDrive(5);
     }
 
+    
+    if (dist_mm < dist2Cube + 10 && dist_mm > dist2Cube - 10 & Lift.rotation(rotationUnits::deg) > 50.0) { // distance to target within 20mm
+      Controller1.rumble(".");                 // short rumble
+      wait(1, seconds);
+    } else if (dist_mm < dist2Cube - 10 && Lift.rotation(rotationUnits::deg)> 50.0) { // too close
+      Controller1.rumble("--");                                    // long rumble
+      wait(1, seconds);
+    }
+
     vex::task::sleep(100); // Sleep the task for a short amount of time to prevent wasted resources.
 
   } // end while
@@ -133,13 +163,6 @@ int read_sonar(void) { // read sonar task
   while (1) {
     dist_mm = Dist.distance(vex::distanceUnits::mm);
 
-    if (dist_mm < dist2Cube + 10 && dist_mm > dist2Cube - 10 & Lift.rotation(rotationUnits::deg) > 50.0) { // distance to target within 20mm
-      Controller1.rumble(".");                 // short rumble
-      wait(1, seconds);
-    } else if (dist_mm < dist2Cube - 10 && Lift.rotation(rotationUnits::deg)> 50.0) { // too close
-      Controller1.rumble("--");                                    // long rumble
-      wait(1, seconds);
-    }
 
     vex::this_thread::sleep_for(100);
   }
@@ -168,23 +191,25 @@ void drive2Target(double D) { // drive by spin
   // reset motor encoders & set braking
   L_Drive.resetRotation();
   R_Drive.resetRotation();
-  
+
  while (b) {
 
-    if (dist_mm > 99999) { b = 0;} // no object detected - quit
+    //if (dist_mm > 99999) { b = 0;} // no object detected - quit
 
-    while (dist_mm > (D + 100)) { // distance from object > target distance + buffer
+    while (dist_mm > (D + 110)) { // distance from object > target distance + buffer
       
       numDegToDrive = numDegToTarget - L_Drive.rotation(deg); //calculate remaining deg to turn
 
-      if (numDegToDrive / numDegToTarget > 0.4) {  //more than 40% away from target
-        speed = 60;                                 //go 60% speed
+      if (numDegToDrive / numDegToTarget > 0.4 || dist_mm > 400) {  //more than 40% away from target
+        speed = 50;                                 //go 60% speed
       } else {
-        speed = (numDegToDrive / numDegToTarget * 100) + 20;    //less than 40% from target start slowing
+        speed = (numDegToDrive / numDegToTarget * 100) + 10;    //less than 40% from target start slowing
       }
 
       L_Drive.spin(vex::directionType::fwd, speed, vex::velocityUnits::pct);
       R_Drive.spin(vex::directionType::rev, speed, vex::velocityUnits::pct);
+
+      wait(0.01,seconds);
 
     } // end while
 
@@ -228,10 +253,10 @@ void rClaw(double deg, double speed, bool b) { // position lift by relative posi
   }
 } // end eArm
 
-void closeClaw(int speed) {
+void closeClaw(double speed) {
   do {
     Claw.spin(vex::directionType::fwd, speed, vex::velocityUnits::pct);
-  } while (Claw.current(vex::percentUnits::pct) < 70);
+  } while (Claw.current(vex::percentUnits::pct) < 50);
   Claw.stop(hold);
 } // end rClaw
 
@@ -241,11 +266,14 @@ void openClaw(int d) {
   Claw.stop(brake);
 } // end rClaw
 
-void homeClaw(void) {
+void homeClaw(void) {  
   Claw.rotateFor(40, vex::rotationUnits::deg, 75, vex::velocityUnits::pct,true); // slightly close claw
+  Claw.resetRotation(); // make position home
+  closeClaw(30);
+  rDrive(70, 70, 30, 30, 1);
   Lift.rotateFor(25, vex::rotationUnits::deg, 40, vex::velocityUnits::pct,true); // lift claw to mid-cube
   Lift.resetRotation(); // make position home
-  Claw.resetRotation(); // make position home
+
 } // end  homeClaw(void);
 
 void grabCube(int n){
@@ -267,7 +295,7 @@ void grabCube(int n){
       break;
   } 
 
-  aLift(liftTo, 40, 1);        // lift claw so sensor can 'see'
+  aLift(liftTo, 40, 0);        // lift claw so sensor can 'see'
   drive2Target(dist2Cube); // NEW - drive to about dist2Cube from next cube
   rLift(-20,20,1);  //lower cube to almost touch targer cube
   rClaw(20,30,1);   //open claw a little
