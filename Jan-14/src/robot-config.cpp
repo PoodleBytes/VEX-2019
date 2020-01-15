@@ -11,7 +11,6 @@ brain  Brain;
 controller Controller1 = controller(primary);
 motor L_Drive = motor(PORT10, ratio18_1, false);
 motor R_Drive = motor(PORT1, ratio18_1, false);
-motor M_Drive = motor(PORT13, ratio18_1, false);
 
 motor LL_Lift = motor(PORT6, ratio36_1, false);
 motor LR_Lift = motor(PORT11, ratio36_1, true);

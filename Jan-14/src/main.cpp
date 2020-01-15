@@ -100,8 +100,8 @@ void usercontrol(void) {
     R_Drive.spin(directionType::fwd,(Controller1.Axis1.value() - Controller1.Axis2.value()) * adjSpeed,  velocityUnits::pct);
 
     //MIDDLE DRIVE
-    if(abs(Controller1.Axis4.value()) > 25){    //'deadband for raising claw 
-      M_Drive.spin(directionType::fwd, Controller1.Axis4.value() * 0.4, velocityUnits::pct);}
+    //if(abs(Controller1.Axis4.value()) > 25){    //'deadband for raising claw 
+      //M_Drive.spin(directionType::fwd, Controller1.Axis4.value() * 0.4, velocityUnits::pct);}
 
     // MICRO-MOVES
     if (Controller1.ButtonX.pressing()) { // move fwd
@@ -220,11 +220,11 @@ void drive2Target(double D) { // drive by spin
   }
 } // end drive2Target
 
-void mDrive(int speed) { // middle drive by spin
+//void mDrive(int speed) { // middle drive by spin
 
-  M_Drive.spin(vex::directionType::fwd, speed, vex::velocityUnits::pct);
+  //M_Drive.spin(vex::directionType::fwd, speed, vex::velocityUnits::pct);
 
-} // end sDrive
+//} // end sDrive
 
 void aLift(double deg, double speed, bool b) { // position lift by absolute position
   Lift.rotateTo(deg, vex::rotationUnits::deg, speed, vex::velocityUnits::pct, false); // This command must be non blocking.
@@ -314,7 +314,7 @@ void pre_auton(void) {
   // set motor defayults
   setUpMotor(L_Drive, 'C');
   setUpMotor(R_Drive, 'C');
-  setUpMotor(M_Drive, 'C');
+  //setUpMotor(M_Drive, 'C');
   setUpMotor(UL_Lift, 'H');
   setUpMotor(LL_Lift, 'H');
   setUpMotor(UR_Lift, 'H');
