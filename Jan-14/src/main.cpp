@@ -30,7 +30,6 @@ int dist2Cube = 160; // mm to grab cube
 // MOVEMENT / CONTROL
 void rDrive(double, double, double, double, bool); // DRIVE BY RELATIVE DISTANCE
 void sDrive(double, double);                       // drive by spinning (speed L, speed r)
-void mDrive(int);                                  // drive sideways (speed)
 void rLift(double, double, bool); // LIFT BY RELATIVE DISTANCE (deg, speed, wait)
 void aLift(double, double, bool); // LIFT BY ABSOLUTE DISTANCE (deg, speed, wait)
 void rClaw(double, double, bool); // LIFT BY ABSOLUTE DISTANCE (deg, speed, wait)
@@ -112,11 +111,7 @@ void usercontrol(void) {
       sDrive(-15, 15);
     } else if (Controller1.ButtonA.pressing()) { // turn right
       sDrive(15, -15);
-    } else if (Controller1.ButtonLeft.pressing()) { // move right
-      mDrive(-5);
-    } else if (Controller1.ButtonRight.pressing()) { // move right
-      mDrive(5);
-    }
+    } 
 
     
     if (dist_mm < dist2Cube + 10 && dist_mm > dist2Cube - 10 & Lift.rotation(rotationUnits::deg) > 50.0) { // distance to target within 20mm
@@ -219,12 +214,6 @@ void drive2Target(double D) { // drive by spin
     b = 0;    //exit function
   }
 } // end drive2Target
-
-//void mDrive(int speed) { // middle drive by spin
-
-  //M_Drive.spin(vex::directionType::fwd, speed, vex::velocityUnits::pct);
-
-//} // end sDrive
 
 void aLift(double deg, double speed, bool b) { // position lift by absolute position
   Lift.rotateTo(deg, vex::rotationUnits::deg, speed, vex::velocityUnits::pct, false); // This command must be non blocking.
