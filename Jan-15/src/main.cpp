@@ -45,7 +45,7 @@ homeClaw();              // preliminary moves - clear wall, position & zero claw
   aLift(80, 40, 1);        // lift claw so sensor can 'see'
   wait(0.3,seconds);    //wait for lift - why??????
   
-  drive2Target(dist2Cube); //drive to about dist2Cube from next cube
+  drive2Target(dist2Cube); //drive to next cube
   rLift(-40,20,1);      //lower cube to almost touch targer cube
   openClaw(75);       //fully open claw 
   aLift(0,20,1);      //position claw at home
@@ -104,7 +104,7 @@ void usercontrol(void) {
     } 
 
     
-    if (dist_mm < dist2Cube + 10 && dist_mm > dist2Cube - 10 & Lift.rotation(rotationUnits::deg) > 50.0) { // distance to target within 20mm
+    if (dist_mm < dist2Cube + 10 && dist_mm > dist2Cube - 10 && Lift.rotation(rotationUnits::deg) > 50.0) { // distance to target within 20mm
       Controller1.rumble(".");                 // short rumble
       wait(1, seconds);
     } else if (dist_mm < dist2Cube - 10 && Lift.rotation(rotationUnits::deg)> 50.0) { // too close
@@ -123,9 +123,9 @@ int tLift(void) { // ARM & CLAW TASK
       Lift.spin(vex::directionType::fwd, Controller1.Axis3.value() * adjLift, vex::velocityUnits::pct);
     } else if (Controller1.Axis3.value() < deadBand * -1.0 && Lift.position(vex::rotationUnits::deg) > 0) { // SLOWLY-LOWER LIFT W/SOFT LIMITS AT 0 DEG
       Lift.spin(vex::directionType::fwd, Controller1.Axis3.value() * (adjLift * 0.2), vex::velocityUnits::pct);
-    } else if (Controller1.ButtonL1.pressing() && Claw.rotation(deg) < 0) { // claw open
+    } else if (Controller1.ButtonL2.pressing() && Claw.rotation(deg) < 0) { // claw open
           Claw.spin(vex::directionType::fwd, 75, vex::velocityUnits::pct);
-    } else if (Controller1.ButtonL2.pressing() && Claw.current(vex::percentUnits::pct) < 50) { // claw close
+    } else if (Controller1.ButtonL1.pressing() && Claw.current(vex::percentUnits::pct) < 50) { // claw close
           Claw.spin(vex::directionType::rev, 75, vex::velocityUnits::pct);
     } else if (Controller1.ButtonR1.pressing()) { // claw close
       grabCube(1);
@@ -185,7 +185,7 @@ void drive2Target(double D) { // drive by spin
       
       numDegToDrive = numDegToTarget - L_Drive.rotation(deg); //calculate remaining deg to turn
 
-      if (numDegToDrive / numDegToTarget > 0.6 || dist_mm > 400) {  //more than 60% away from target
+      if (numDegToDrive / numDegToTarget > 0.6 && dist_mm > 400) {  //more than 60% away from target
         speed = 40;                                 //go 60% speed
       } else {
         speed = (numDegToDrive / numDegToTarget * 100) + 10;    //less than 60% from target start slowing
@@ -348,8 +348,8 @@ int main() {
   Competition.drivercontrol(usercontrol);
   
   //START TASK TO READ SONAR (DISTANCE)
-  vex::task dst(read_sonar);
-  dst.setPriority(6);
+/*   vex::task dst(read_sonar);
+  dst.setPriority(6); */
 
   // START DISPLAY ENCODER TO CONTROLLER TASK
   if (display) {

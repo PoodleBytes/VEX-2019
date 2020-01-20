@@ -18,7 +18,7 @@ motor LR_Lift = motor(PORT11, ratio36_1, true);
 motor UL_Lift = motor(PORT17, ratio36_1, true);
 motor UR_Lift = motor(PORT16, ratio36_1, false);
 
-motor Claw = motor(PORT20, ratio36_1, false);
+motor Claw = motor(PORT20, ratio36_1, true);
 sonar Dist = sonar(Brain.ThreeWirePort.C);    //C is Sensor Output, D is Input
 
 motor_group Lift(UL_Lift, LL_Lift,UR_Lift, LR_Lift); // makes 2 lift motors act as one

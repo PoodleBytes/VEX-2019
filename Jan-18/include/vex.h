@@ -14,8 +14,10 @@
 
 #include "v5.h"
 #include "v5_vcs.h"
+#include <vex_triport.h>  //PER API - NOT SURE NEEDED
 
 #include "robot-config.h"
+
 
 #define waitUntil(condition)                                                   \
   do {                                                                         \
@@ -24,12 +26,3 @@
 
 #define repeat(iterations)                                                     \
   for (int iterator = 0; iterator < iterations; iterator++)
-
-
-  // MOVEMENT / CONTROL
-void rDrive(double, double, double, double, bool); // DRIVE BY RELATIVE DISTANCE
-
-void autonomous(void) {
-rDrive(-500,-500,20,20,1);
-rDrive(500,500,20,20,1);
-}

@@ -15,14 +15,7 @@ void pre_auton(void);            // SETTINGS FOR MOTORS, SCREEN ETC
 void setUpMotor(motor(M), char); // default motor settings
 int updateScreen();              // DISPLAY ENCODER TASK
 int tLift();                     // arm-relatecd tasks / buttons
-void homeClaw(void);             // set claw hei// MOVEMENT / CONTROL
-void rDrive(double, double, double, double, bool); // DRIVE BY RELATIVE DISTANCE
-
-void autonomous(void) {
-rDrive(-500,-500,20,20,1);
-rDrive(500,500,20,20,1);
-}
-//ght and open position (home  
+void homeClaw(void);             // set claw height and open position (home)
 int read_sonar(void);            // read sonar task
 
 // VARIABLES
@@ -30,7 +23,7 @@ double adjField = 1.0; // adjust automomouse for different fields
 double adjSpeed = 1.0; // adjust drive sensitivity
 double adjLift = 0.8;  // adjust arm's sensitivity
 double dist_mm;        //sonar distance in mm
-int deadBand = 10; // range below which joystic``k is ignored
+int deadBand = 10; // range below which joystick is ignored
 bool display = 1; // set to true (1) will displays encoders on controller, false will not
 int dist2Cube = 160; // mm to grab cube
 
@@ -52,7 +45,7 @@ homeClaw();              // preliminary moves - clear wall, position & zero claw
   aLift(80, 40, 1);        // lift claw so sensor can 'see'
   wait(0.3,seconds);    //wait for lift - why??????
   
-  drive2Target(dist2Cube); //drive to about dist2Cube from next cube
+  drive2Target(dist2Cube); //drive to next cube
   rLift(-40,20,1);      //lower cube to almost touch targer cube
   openClaw(75);       //fully open claw 
   aLift(0,20,1);      //position claw at home
@@ -110,15 +103,6 @@ void usercontrol(void) {
       sDrive(15, -15);
     } 
 
-    
-    if (dist_mm < dist2Cube + 10 && dist_mm > dist2Cube - 10 & Lift.rotation(rotationUnits::deg) > 50.0) { // distance to target within 20mm
-      Controller1.rumble(".");                 // short rumble
-      wait(1, seconds);
-    } else if (dist_mm < dist2Cube - 10 && Lift.rotation(rotationUnits::deg)> 50.0) { // too close
-      Controller1.rumble("--");                                    // long rumble
-      wait(1, seconds);
-    }
-
     vex::task::sleep(100); // Sleep the task for a short amount of time to prevent wasted resources.
 
   } // end while
@@ -130,9 +114,9 @@ int tLift(void) { // ARM & CLAW TASK
       Lift.spin(vex::directionType::fwd, Controller1.Axis3.value() * adjLift, vex::velocityUnits::pct);
     } else if (Controller1.Axis3.value() < deadBand * -1.0 && Lift.position(vex::rotationUnits::deg) > 0) { // SLOWLY-LOWER LIFT W/SOFT LIMITS AT 0 DEG
       Lift.spin(vex::directionType::fwd, Controller1.Axis3.value() * (adjLift * 0.2), vex::velocityUnits::pct);
-    } else if (Controller1.ButtonL1.pressing() && Claw.rotation(deg) < 0) { // claw open
+    } else if (Controller1.ButtonL2.pressing() && Claw.rotation(deg) < 0) { // claw open
           Claw.spin(vex::directionType::fwd, 75, vex::velocityUnits::pct);
-    } else if (Controller1.ButtonL2.pressing() && Claw.current(vex::percentUnits::pct) < 50) { // claw close
+    } else if (Controller1.ButtonL1.pressing() && Claw.current(vex::percentUnits::pct) < 50) { // claw close
           Claw.spin(vex::directionType::rev, 75, vex::velocityUnits::pct);
     } else if (Controller1.ButtonR1.pressing()) { // claw close
       grabCube(1);
@@ -154,8 +138,15 @@ int tLift(void) { // ARM & CLAW TASK
 int read_sonar(void) { // read sonar task
   while (1) {
     dist_mm = Dist.distance(vex::distanceUnits::mm);
-
-
+    double delay = 0.5;
+    if (dist_mm < dist2Cube + 10 && dist_mm > dist2Cube - 10 && Lift.rotation(rotationUnits::deg) > 50.0) { // distance to target within 20mm
+      Controller1.rumble(".");                 // short rumble
+      delay = delay * 2;
+      wait(delay, seconds);
+    } else if (dist_mm < dist2Cube - 10 && Lift.rotation(rotationUnits::deg)> 50.0) { // too close
+      Controller1.rumble("--");                                    // long rumble
+      wait(1, seconds);
+    } 
     vex::this_thread::sleep_for(100);
   }
   return 0;
@@ -192,7 +183,7 @@ void drive2Target(double D) { // drive by spin
       
       numDegToDrive = numDegToTarget - L_Drive.rotation(deg); //calculate remaining deg to turn
 
-      if (numDegToDrive / numDegToTarget > 0.6 || dist_mm > 400) {  //more than 60% away from target
+      if (numDegToDrive / numDegToTarget > 0.6 && dist_mm > 400) {  //more than 60% away from target
         speed = 40;                                 //go 60% speed
       } else {
         speed = (numDegToDrive / numDegToTarget * 100) + 10;    //less than 60% from target start slowing

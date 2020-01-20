@@ -15,14 +15,7 @@ void pre_auton(void);            // SETTINGS FOR MOTORS, SCREEN ETC
 void setUpMotor(motor(M), char); // default motor settings
 int updateScreen();              // DISPLAY ENCODER TASK
 int tLift();                     // arm-relatecd tasks / buttons
-void homeClaw(void);             // set claw hei// MOVEMENT / CONTROL
-void rDrive(double, double, double, double, bool); // DRIVE BY RELATIVE DISTANCE
-
-void autonomous(void) {
-rDrive(-500,-500,20,20,1);
-rDrive(500,500,20,20,1);
-}
-//ght and open position (home  
+void homeClaw(void);             // set claw height and open position (home)
 int read_sonar(void);            // read sonar task
 
 // VARIABLES
@@ -30,7 +23,7 @@ double adjField = 1.0; // adjust automomouse for different fields
 double adjSpeed = 1.0; // adjust drive sensitivity
 double adjLift = 0.8;  // adjust arm's sensitivity
 double dist_mm;        //sonar distance in mm
-int deadBand = 10; // range below which joystic``k is ignored
+int deadBand = 10; // range below which joystick is ignored
 bool display = 1; // set to true (1) will displays encoders on controller, false will not
 int dist2Cube = 160; // mm to grab cube
 
@@ -52,15 +45,16 @@ homeClaw();              // preliminary moves - clear wall, position & zero claw
   aLift(80, 40, 1);        // lift claw so sensor can 'see'
   wait(0.3,seconds);    //wait for lift - why??????
   
-  drive2Target(dist2Cube); //drive to about dist2Cube from next cube
-  rLift(-40,20,1);      //lower cube to almost touch targer cube
+  drive2Target(dist2Cube); //drive to next cube
+  rLift(-90,20,1);      //lower cube to almost touch targer cube
+  rDrive(100,100,20,20,1);
   openClaw(75);       //fully open claw 
   aLift(0,20,1);      //position claw at home
-  closeClaw(30);      //gram cube 1
+  closeClaw(50);      //gram cube 1
   aLift(80, 40, 1);        // lift claw so sensor can 'see' 
 
 
-  rDrive(400,400, 30, 30, 1);    //go little more fwd so turn will center on next cube
+  rDrive(350,350, 30, 30, 1);    //go little more fwd so turn will center on next cube
   wait(0.25,seconds);           //wait for bot to  stabilize
   rDrive(360,-360, 30, 30, 1);    //*turn right *
 
@@ -192,7 +186,7 @@ void drive2Target(double D) { // drive by spin
       
       numDegToDrive = numDegToTarget - L_Drive.rotation(deg); //calculate remaining deg to turn
 
-      if (numDegToDrive / numDegToTarget > 0.6 || dist_mm > 400) {  //more than 60% away from target
+      if (numDegToDrive / numDegToTarget > 0.6 && dist_mm > 400) {  //more than 60% away from target
         speed = 40;                                 //go 60% speed
       } else {
         speed = (numDegToDrive / numDegToTarget * 100) + 10;    //less than 60% from target start slowing
@@ -242,7 +236,7 @@ void rClaw(double deg, double speed, bool b) { // position lift by relative posi
 void closeClaw(double speed) {
   do {
     Claw.spin(vex::directionType::fwd, speed, vex::velocityUnits::pct);
-  } while (Claw.current(vex::percentUnits::pct) < 50);
+  } while (Claw.current(vex::percentUnits::pct) < 70);
   Claw.stop(hold);
 } // end rClaw
 
