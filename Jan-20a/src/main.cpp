@@ -25,6 +25,7 @@ double adjLift = 0.8;  // adjust arm's sensitivity
 double dist_mm;        //sonar distance in mm
 int deadBand = 10; // range below which joystick is ignored
 bool display = 1; // set to true (1) will displays encoders on controller, false will not
+bool buzz_on = 0;
 int dist2Cube = 160; // mm to grab cube
 
 // MOVEMENT / CONTROL
@@ -76,6 +77,7 @@ void usercontrol(void) {
   // START TASK for LIFT
   vex::task t(tLift); // start task which updates controller screen
   t.setPriority(6);
+  buzz_on = 1;
 
   while (1) {
     // DRIVE
@@ -141,16 +143,17 @@ int read_sonar(void) { // read sonar task
     dist_mm = Dist.distance(vex::distanceUnits::mm);
 
     //BUZZ JOYSTICK - 
-    if (dist_mm < dist2Cube + 10 && dist_mm > dist2Cube - 10 && Lift.rotation(rotationUnits::deg) > 50.0) { // distance to target within 20mm
-      Controller1.rumble(".");                 // short rumble
-      delay = delay * 2;
-      vex::this_thread::sleep_for(delay);
-    } else if (dist_mm < dist2Cube - 10 && Lift.rotation(rotationUnits::deg)> 50.0) { // too close
-      Controller1.rumble("--");                                    // long rumble
-      delay = delay * 2;
-      vex::this_thread::sleep_for(delay);
-    } else{delay = 500;}
-
+    if(buzz_on){
+      if (dist_mm < dist2Cube + 10 && dist_mm > dist2Cube - 10 && Lift.rotation(rotationUnits::deg) > 50.0) { // distance to target within 20mm
+        Controller1.rumble(".");                 // short rumble
+        delay = delay * 2;
+        vex::this_thread::sleep_for(delay);
+      } else if (dist_mm < dist2Cube - 10 && Lift.rotation(rotationUnits::deg)> 50.0) { // too close
+        Controller1.rumble("--");                                    // long rumble
+        delay = delay * 2;
+        vex::this_thread::sleep_for(delay);
+      } else{delay = 500;}
+    }
     vex::this_thread::sleep_for(100);
   }
   return 0;
@@ -160,6 +163,7 @@ void rDrive(double lDeg, double rDeg, double l, double r, bool b) { // drive by 
   rDeg = rDeg * -1;
   L_Drive.rotateFor(lDeg * adjField, vex::rotationUnits::deg, l, vex::velocityUnits::pct, false);
   R_Drive.rotateFor(rDeg * adjField, vex::rotationUnits::deg, r, vex::velocityUnits::pct, b);
+  wait(0.2, seconds);   //let robot settle
 } // end rDrive
 
 void sDrive(double lSpeed, double rSpeed) { // drive by spin
@@ -326,18 +330,6 @@ int updateScreen() {
     Controller1.Screen.setCursor(3, 1);
     Controller1.Screen.print("Distance: %5.0f", dist_mm);
 
-
-    // RESET ENCODERS
-    /*
-    if (Controller1.ButtonLeft.pressing()) { // DRIVE ENCODERS
-      L_Drive.resetRotation();
-      R_Drive.resetRotation();
-    }
-    if (Controller1.ButtonRight.pressing()) { // ARM AND GRABBER ENCODERS
-      L_Lift.resetRotation();
-      Claw.resetRotation();
-    }
- */
     // don't hog the cpu :)
     vex::this_thread::sleep_for(250);
 
