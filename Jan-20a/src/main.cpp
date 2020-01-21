@@ -41,12 +41,12 @@ void grabCube( int num_Cubes);    //GRAB CUBE - (# OF CUBES)
 
 void autonomous(void) {
   
-  //rDrive(70, 70, 30, 30, 1);
+
 homeClaw();              // preliminary moves - clear wall, position & zero claw/lift
 closeClaw(30);
-//moved to homeClaw:  closeClaw(40);          //grab preload cube
   aLift(80, 40, 1);        // lift claw so sensor can 'see'
   wait(0.3,seconds);    //wait for lift - why??????
+
   
   drive2Target(dist2Cube); //drive to next cube
   rLift(-40,20,1);      //lower cube to almost touch targer cube
@@ -54,10 +54,10 @@ closeClaw(30);
   aLift(0,20,1);      //position claw at home
   closeClaw(30);      //gram cube 1
   aLift(80, 40, 1);        // lift claw so sensor can 'see' 
-
+ 
 
   rDrive(350,350, 30, 30, 1);    //go little more fwd so turn will center on next cube
-  wait(0.25,seconds);           //wait for bot to  stabilize
+ // wait(0.25,seconds);           //wait for bot to  stabilize
   rDrive(360,-360, 30, 30, 1);    //*turn right *
 
   drive2Target(dist2Cube); //drive to next cube
@@ -67,8 +67,12 @@ closeClaw(30);
   closeClaw(30);      //gram cube 1
   aLift(80, 40, 1);        // lift claw so sensor can 'see' 
 
-  // turn toward wall......
+  // turn toward wall and drive so you're a certain distance from corner......
   //drive2Target(300); // Driver to 12" (300mm) from wall
+  //lower claw to home
+  //open claaw
+  //back-up
+  //*turn towardnext target
 
 } // end autonomous
 
