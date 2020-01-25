@@ -1,3 +1,108 @@
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// Claw                 motor         4               
+// L_Lift               motor         5               
+// L_Drive              motor         1               
+// R_Drive              motor         2               
+// R_Lift               motor         3               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// Claw                 motor         4               
+// L_Lift               motor         5               
+// L_Drive              motor         1               
+// R_Front              motor         2               
+// R_Lift               motor         3               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// Claw                 motor         4               
+// L_Lift               motor         5               
+// L_Drive              motor         1               
+// R_Front              motor         2               
+// R_Drive              motor         3               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// Claw                 motor         4               
+// L_Lift               motor         5               
+// L_Drive              motor         1               
+// R_Front              motor         2               
+// R_Lift               motor         3               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// Claw                 motor         4               
+// L_Lift               motor         5               
+// L_Front              motor         1               
+// R_Front              motor         2               
+// R_Lift               motor         3               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// Claw                 motor         4               
+// L_Lift               motor         5               
+// L_Front              motor         1               
+// R_Front              motor         10              
+// R_Lift               motor         3               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// Claw                 motor         4               
+// L_Lift               motor         5               
+// L_Front              motor         9               
+// R_Front              motor         10              
+// R_Lift               motor         3               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// Claw                 motor         4               
+// L_Lift               motor         5               
+// R_Rear               motor         2               
+// L_Front              motor         9               
+// R_Front              motor         10              
+// R_Lift               motor         3               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// Claw                 motor         4               
+// L_Lift               motor         5               
+// L_Rear               motor         1               
+// R_Rear               motor         2               
+// L_Front              motor         9               
+// R_Front              motor         10              
+// R_Lift               motor         3               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// Claw                 motor         6               
+// L_Lift               motor         5               
+// L_Rear               motor         1               
+// R_Rear               motor         2               
+// L_Front              motor         9               
+// R_Front              motor         10              
+// R_Lift               motor         3               
+// ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
@@ -76,8 +181,6 @@ void autonomous(void) {
 void usercontrol(void) {
   // User control code here, inside the loop
 
-  motor_group L_Drive(L_Rear, L_Front);
-  motor_group R_Drive(R_Rear,R_Front);
   motor_group Lift(L_Lift,R_Lift);
 
   while (1) {
