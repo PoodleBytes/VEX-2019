@@ -40,47 +40,27 @@ void drive2Target(double dist);        // drive to target (distance in mm)
 void grabCube( int num_Cubes);    //GRAB CUBE - (# OF CUBES)
 
 void autonomous(void) {
-  
+   //position claw - DO NOT REMOVE
+  homeClaw();  
 
-homeClaw();              // preliminary moves - clear wall, position & zero claw/lift
-closeClaw(30);
-  aLift(80, 40, 1);        // lift claw so sensor can 'see'
-  wait(0.3,seconds);    //wait for lift - why??????
-
-  
-  drive2Target(dist2Cube); //drive to next cube
-  //rDrive(25,25,20,20,1);
-  rLift(-40,20,1);      //lower cube to almost touch targer cube
-  openClaw(75);       //fully open claw 
-  aLift(0,20,1);      //position claw at home
-  closeClaw(30);      //gram cube 1
-  aLift(80, 40, 1);        // lift claw so sensor can 'see' 
- 
-
-  rDrive(370,370, 30, 30, 1);    //go little more fwd so turn will center on next cube
- // wait(0.25,seconds);           //wait for bot to  stabilize
-  rDrive(360,-360, 30, 30, 1);    //*turn right *
-
-  drive2Target(dist2Cube); //drive to next cube
-  rLift(-40,20,1);      //lower cube to almost touch targer cube
-  openClaw(75);       //fully open claw 
-  aLift(0,20,1);      //position claw at home
-  closeClaw(30);      //gram cube 1
-  aLift(120, 40, 1);        // lift claw so sensor can 'see' 
-
-  // turn toward wall and drive so you're a certain distance from corner......
-  //drive2Target(300); // Driver to 12" (300mm) from wall
-  //lower claw to home
-  //open claaw
-  //back-up
-  //*turn towardnext target
-  rDrive(400,-400,20,20,1);
-  rDrive(450,450,20,20,1);
-  rDrive(-400,400,20,20,1);
-  rDrive(340,340,20,20,1);
- 
-} // end autonomous
-
+  //auto - 4point blue - temp
+  rDrive(170, 170, 40, 40, 1);    //drive to near cube
+  //drive2Target(dist2Cube)
+  closeClaw(70);                  
+  rLift(220, 40, 1);            //lift cube
+  rDrive(600, 600, 40, 40, 1);  //drive to stack
+  //drive2Target(dist2Cube)
+  rLift(-50,40,1);
+  openClaw(60);
+  rLift(-140, 40, 1);           //lower lift
+  closeClaw(75);
+  rLift(40, 40, 1);             //lift stack
+  rDrive(505, -505, 60, 60, 1); //turn toward corner
+  rDrive(880,880,60,60,1);
+  rDrive(300,300,40,40,1);
+  rLift(-80,40,1);
+  openClaw(40);
+}
 void usercontrol(void) {
   // ONE TIME COMMANDS RAN B4 USER CONTROL
   // START TASK for LIFT
