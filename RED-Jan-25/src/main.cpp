@@ -45,7 +45,7 @@ void autonomous(void) {
 
   //auto - 4point blue - temp
   //rDrive(170, 170, 40, 40, 1);    //drive to near cube
-  drive2Target(dist2Cube)
+  drive2Target(dist2Cube);
   closeClaw(70);                  
   rLift(220, 40, 1);            //lift cube to top of 4-cube stack
   //rDrive(600, 600, 40, 40, 1);  //drive to stack
