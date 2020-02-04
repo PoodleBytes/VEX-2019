@@ -180,9 +180,12 @@ void sDrive(double lSpeed, double rSpeed) { // drive by spin
   rSpeed = rSpeed * -1;
   L_Drive.spin(vex::directionType::fwd, lSpeed, vex::velocityUnits::pct);
   R_Drive.spin(vex::directionType::fwd, rSpeed, vex::velocityUnits::pct);
+  wait(0.2, seconds);   //let robot settle
 } // end sDrive
 
 void drive2Target(double stopHere) { // drive by spin
+
+  if(L_Drive.isSpinning() || R_Drive.isSpinning()){wait(200,msec);}; //if robot's moving let it settle
 
   int speed = 20;    //set motor speed
   bool b = 1;
@@ -298,8 +301,8 @@ void pre_auton(void) {
   vexcodeInit();
 
   // set motor defayults
-  setUpMotor(L_Drive, 'C');
-  setUpMotor(R_Drive, 'C');
+  setUpMotor(L_Drive, 'B');
+  setUpMotor(R_Drive, 'B');
   setUpMotor(UL_Lift, 'H');
   setUpMotor(LL_Lift, 'H');
   setUpMotor(UR_Lift, 'H');
