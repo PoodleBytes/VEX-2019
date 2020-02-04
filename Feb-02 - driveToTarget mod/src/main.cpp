@@ -184,7 +184,7 @@ void sDrive(double lSpeed, double rSpeed) { // drive by spin
 
 void drive2Target(double stopHere) { // drive by spin
 
-  int speed;    //set motor speed
+  int speed = 20;    //set motor speed
   bool b = 1;
   
   // reset motor encoders & set braking
@@ -195,6 +195,12 @@ void drive2Target(double stopHere) { // drive by spin
 
     while (dist_mm > (stopHere)) { // distance from object > target distance + buffer
       
+      //START DRIVING AT 20% TO MINIMIZE INITIAL JERK
+      L_Drive.spin(vex::directionType::fwd, speed, vex::velocityUnits::pct);
+      R_Drive.spin(vex::directionType::rev, speed, vex::velocityUnits::pct);
+      
+      wait(10,msec);
+
       if (dist_mm > 4 * stopHere) {  //more than 4x target
         speed = 60;                                 //go 60% speed
       } else if(dist_mm >= 3 * stopHere && dist_mm < 4 * stopHere){  // >3x but <4x target - slow a little
@@ -203,10 +209,6 @@ void drive2Target(double stopHere) { // drive by spin
         speed = (30);    //less than 3x target start slowing
       } else{speed = 20;}
 
-      L_Drive.spin(vex::directionType::fwd, speed, vex::velocityUnits::pct);
-      R_Drive.spin(vex::directionType::rev, speed, vex::velocityUnits::pct);
-      
-      wait(10,msec);
     } // end while
 
     L_Drive.stop(hold);
