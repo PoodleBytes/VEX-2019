@@ -48,18 +48,18 @@ void autonomous(void) {
   drive2Target(dist2Cube);
   closeClaw(70);                  
   rLift(220, 40, 1);            //lift cube to top of 4-cube stack
-  //rDrive(600, 600, 40, 40, 1);  //drive to stack
+  rDrive(600, 600, 40, 40, 1);  //drive to stack
   drive2Target(dist2Cube);    //drive to stack
   rLift(-50,40,1);            //lower lift a little
   openClaw(60);
   rLift(-140, 40, 1);           //lower lift to 2nd cube?????
   closeClaw(75);
   rLift(60, 40, 1);             //lift stack
-  rDrive(-1000, 1000, 40, 40, 1); //**** turn LEFT 180deg toward starting wall
+  rDrive(-500, 500, 40, 40, 1); //**** turn LEFT 180deg toward starting wall
   //rDrive(880,880,60,60,1);
   //rDrive(300,300,40,40,1);
   drive2Target(300);    //drive to 300mm from wall
-  rDrive(360, -360, 40, 40, 1); //**** turn RIGHT toward corner
+  //rDrive(360, -360, 40, 40, 1); //**** turn RIGHT toward corner
   
   drive2Target(200);    //drive to 300mm from wall
 

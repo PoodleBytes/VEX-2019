@@ -50,10 +50,12 @@ void autonomous(void) {
   drive2Target(dist2Cube);
   //GRAB CUBE
   closeClaw(70);
+  //Drive forwards
+  drive2Target(700);
   //LIFT CUBE TO PLACE ON 4-STACK                    
   rLift(220, 40, 1);            
   //DRIVE TO 4-STACK
-  drive2Target(dist2Cube);   
+  drive2Target(1400);   
   //LOWER LIFT TO PUT CUBE ONTOP OF STACK
   rLift(-50,40,1);            
   //OEPN CLAW
@@ -65,11 +67,11 @@ void autonomous(void) {
   //LIFT STACK
   rLift(70, 40, 1);          
   //** TURN RIGHT 180 DEG TO FACE STARTING WALL
-  rDrive(500, -500, 40, 40, 1); 
+  rDrive(-500, 500, 40, 40, 1); 
   //DRIVE TORWARDS WALL
   drive2Target(300);    //300mm ~ 12"
   //** TURN LEFT 90 DEG TOWARD CORNER
-  rDrive(-360, 360, 40, 40, 1); 
+  rDrive(-30, 30, 40, 40, 1); 
   //DRIVE TORWARDS WALL
   drive2Target(200);    //200mm ~ 8"
   //LOWER (HOME) CLAW 

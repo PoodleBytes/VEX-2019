@@ -57,9 +57,10 @@ void autonomous(void) {
   rLift(40, 40, 1);             //lift stack
   rDrive(-505, 505, 60, 60, 1); //turn toward corner
   rDrive(880,880,60,60,1);
-  rDrive(300,300,40,40,1);
+  rDrive(150,150,40,40,1);
   rLift(-80,40,1);
-  openClaw(40);
+  //openClaw(60);
+  //rDrive(-300,-300,20,20,1);
 }
 void usercontrol(void) {
   // ONE TIME COMMANDS RAN B4 USER CONTROL
