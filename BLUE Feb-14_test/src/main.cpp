@@ -44,28 +44,11 @@ void autonomous(void) {
   homeClaw();  
 
   //auto - 4point RED
-  rDrive(170, 170, 40, 40, 1);    //drive to near cube
-  drive2Target(dist2Cube);
-  closeClaw(70);                  
-  rLift(220, 40, 1);            //lift cube to top of 4-cube stack
-  rDrive(550, 550, 40, 40, 1);  //drive to stack
-  drive2Target(dist2Cube);    //drive to stack
-  rLift(-50,40,1);            //lower lift a little
-  openClaw(60);
-  rLift(-125, 40, 1);           //lower lift to 2nd cube?????
-  closeClaw(75);
-  rLift(60, 40, 1);             //lift stack
-  rDrive(500, -500, 40, 40, 1); //**** turn RIGHT 180deg toward starting wall
+              
+  rLift(100, 40, 1);            //lift cube to top of 4-cube stack
+  rDrive(-700, -700, 60, 60, 1);  //drive to stack
+  rDrive(1000, 1000, 60, 60, 1); //**** turn RIGHT 180deg toward starting wall
 
-  rDrive(500,500,60,60,1);
-     //drive to 300mm from wall
-  rDrive(15,-15,20,20,1);   //**** turn RIGHT
-  rDrive(490,490,20,20,1); 
-  rLift(10,25,1);
-  rLift(-70,25,1);
-  openClaw(40);
-
-  rDrive(-1000, -1000, 80, 80, 1);
 
 }//END AUTOMOUS
 
@@ -113,10 +96,11 @@ int tLift(void) { // ARM & CLAW TASK
       Lift.spin(vex::directionType::fwd, Controller1.Axis3.value() * adjLift, vex::velocityUnits::pct);
     } else if (Controller1.Axis3.value() < deadBand * -1.0 && Lift.position(vex::rotationUnits::deg) > 0) { // SLOWLY-LOWER LIFT W/SOFT LIMITS AT 0 DEG
       Lift.spin(vex::directionType::fwd, Controller1.Axis3.value() * (adjLift * 0.2), vex::velocityUnits::pct);
-    } else if (Controller1.ButtonL2.pressing() && Claw.rotation(deg) > 0) { // claw open
+    } else if (Controller1.ButtonL2.pressing()) { // claw open
           Claw.spin(vex::directionType::rev, 75, vex::velocityUnits::pct);
-    } else if (Controller1.ButtonL1.pressing() && Claw.current(vex::percentUnits::pct) < 50) { // claw close
-          Claw.spin(vex::directionType::fwd, 75, vex::velocityUnits::pct);
+    } else if (Controller1.ButtonL1.pressing()) { // claw close
+          if(Claw.current(vex::percentUnits::pct) < 70){
+              Claw.spin(vex::directionType::fwd, 75, vex::velocityUnits::pct);}          
     } else if (Controller1.ButtonR1.pressing()) { // claw close
       grabCube(1);
     } else if (Controller1.ButtonR2.pressing()) { // claw open

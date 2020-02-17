@@ -25,7 +25,7 @@ double adjLift = 0.8;  // adjust arm's sensitivity
 double dist_mm;        //sonar distance in mm
 int deadBand = 10; // range below which joystick is ignored
 bool display = 1; // set to true (1) will displays encoders on controller, false will not
-bool buzz_on = 1;
+bool buzz_on = 0;
 int dist2Cube = 160; // mm to grab cube
 
 // MOVEMENT / CONTROL
@@ -41,31 +41,10 @@ void grabCube( int num_Cubes);    //GRAB CUBE - (# OF CUBES)
 
 void autonomous(void) {
    //position claw - DO NOT REMOVE
-  homeClaw();  
+  //homeClaw();  
 
-  //auto - 4point RED
-  rDrive(170, 170, 40, 40, 1);    //drive to near cube
-  drive2Target(dist2Cube);
-  closeClaw(70);                  
-  rLift(220, 40, 1);            //lift cube to top of 4-cube stack
-  rDrive(550, 550, 40, 40, 1);  //drive to stack
-  drive2Target(dist2Cube);    //drive to stack
-  rLift(-50,40,1);            //lower lift a little
-  openClaw(60);
-  rLift(-125, 40, 1);           //lower lift to 2nd cube?????
-  closeClaw(75);
-  rLift(60, 40, 1);             //lift stack
-  rDrive(500, -500, 40, 40, 1); //**** turn RIGHT 180deg toward starting wall
+  drive2Target(160);
 
-  rDrive(500,500,60,60,1);
-     //drive to 300mm from wall
-  rDrive(15,-15,20,20,1);   //**** turn RIGHT
-  rDrive(490,490,20,20,1);
-  rLift(10,25,1);
-  rLift(-70,25,1);
-  openClaw(40);
-
-  rDrive(-1000, -1000, 80, 80, 1);
 
 }//END AUTOMOUS
 
@@ -113,11 +92,10 @@ int tLift(void) { // ARM & CLAW TASK
       Lift.spin(vex::directionType::fwd, Controller1.Axis3.value() * adjLift, vex::velocityUnits::pct);
     } else if (Controller1.Axis3.value() < deadBand * -1.0 && Lift.position(vex::rotationUnits::deg) > 0) { // SLOWLY-LOWER LIFT W/SOFT LIMITS AT 0 DEG
       Lift.spin(vex::directionType::fwd, Controller1.Axis3.value() * (adjLift * 0.2), vex::velocityUnits::pct);
-    } else if (Controller1.ButtonL2.pressing()) { // claw open
+    } else if (Controller1.ButtonL2.pressing() && Claw.rotation(deg) > 0) { // claw open
           Claw.spin(vex::directionType::rev, 75, vex::velocityUnits::pct);
-    } else if (Controller1.ButtonL1.pressing()){ // claw close
-          if(Claw.current(vex::percentUnits::pct) < 70){
-              Claw.spin(vex::directionType::fwd, 75, vex::velocityUnits::pct);}    
+    } else if (Controller1.ButtonL1.pressing() && Claw.current(vex::percentUnits::pct) < 50) { // claw close
+          Claw.spin(vex::directionType::fwd, 75, vex::velocityUnits::pct);
     } else if (Controller1.ButtonR1.pressing()) { // claw close
       grabCube(1);
     } else if (Controller1.ButtonR2.pressing()) { // claw open
@@ -173,12 +151,12 @@ void sDrive(double lSpeed, double rSpeed) { // drive by spin
   wait(0.2, seconds);   //let robot settle
 } // end sDrive
 
-void drive2Target(double D) { // drive by spin
-//
-  double degToTarget = ((dist_mm - D) / 0.887);          // distance * (wheel dia / 360 deg = 0.887 mm/deg)
-  double degToDrive;     // track # of degrees motors turned 
-  int speed;    //set motor speed
-  bool b = 1;
+void drive2Target(double target) { // drive by spin
+
+  //if(L_Drive.isSpinning() || R_Drive.isSpinning()){wait(200,msec);}; //if robot's moving let it settle
+
+  int speed = 20;    //set motor speed
+  bool b = true;
   
   // reset motor encoders & set braking
   L_Drive.resetRotation();
@@ -186,30 +164,34 @@ void drive2Target(double D) { // drive by spin
 
  while (b) {
 
-    //if (dist_mm > 99999) { b = 0;} // no object detected - quit
-
-    while (dist_mm > (D + 110)) { // distance from object > target distance + buffer
+    do{ // distance from object > target distance + buffer
       
-      degToDrive = degToTarget - L_Drive.rotation(deg); // remaining deg to turn
-
-      if (dist_mm > 400) {  //more than 400 away from target
-        speed = 40;                                 //go 60% speed
-      } else {
-        speed = (30);    //less than 60% from target start slowing
-      }
-
+      //START DRIVING AT 20% TO MINIMIZE INITIAL JERK
       L_Drive.spin(vex::directionType::fwd, speed, vex::velocityUnits::pct);
       R_Drive.spin(vex::directionType::rev, speed, vex::velocityUnits::pct);
+      
+      wait(10,msec);
 
-    } // end while
+      if (dist_mm > 4 * target) {  //more than 4x target
+        speed = 60;                                 //go 60% speed
+      } else if(dist_mm >= 3 * target && dist_mm < 4 * target){  // >3x but <4x target - slow a little
+        speed = (40);    //less than 60% from target start slowing
+      } else if(dist_mm >= 2 * target && dist_mm < 3 * target){
+        speed = (30);    //less than 3x target start slowing
+      } else{speed = 20;}
+
+    } while (dist_mm > target); // end while
 
     L_Drive.stop(hold);
-    
     R_Drive.stop(hold);
-    wait(0.2,seconds);
+
+    //let robot settle
+    wait(0.5,seconds);
 
     b = 0;    //exit function
   }
+    L_Drive.setBrake(coast);
+    R_Drive.setBrake(coast);
 } // end drive2Target
 
 
