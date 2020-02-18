@@ -170,15 +170,17 @@ R_Drive.setBrake(coast);
 /*   if(Lift.rotation(rotationUnits::deg)< 50){
     aLift(60, 40,1);
   } */
-wait(200,msec);
+
+  L_Drive.spin(vex::directionType::fwd, speed, vex::velocityUnits::pct);
+  R_Drive.spin(vex::directionType::rev, speed,vex::velocityUnits::pct); 
+  wait(200,msec);
   //drive witing +-10mm of target, slowing on approach
   while(b){
     wait(50,msec);
-      L_Drive.spin(vex::directionType::fwd, speed, vex::velocityUnits::pct);
-      R_Drive.spin(vex::directionType::rev, speed,vex::velocityUnits::pct); 
-    if(Dist.distance(vex::distanceUnits::mm) > target * 4){
+
+    if(Dist.distance(vex::distanceUnits::mm) > target * 2 ){
       speed = 50;
-   } else if(Dist.distance(vex::distanceUnits::mm) < target * 4 && Dist.distance(vex::distanceUnits::mm) > target + 50){
+    } else if(Dist.distance(vex::distanceUnits::mm) < target * 4 && Dist.distance(vex::distanceUnits::mm) > target + 50){
      speed = 20;     
     } else {
       L_Drive.stop(hold);

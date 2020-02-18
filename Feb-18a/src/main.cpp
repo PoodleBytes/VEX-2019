@@ -26,7 +26,7 @@ double dist_mm;        //sonar distance in mm
 int deadBand = 10; // range below which joystick is ignored
 bool display = 1; // set to true (1) will displays encoders on controller, false will not
 bool buzz_on = 1;
-int dist2Cube = 160; // mm to grab cube
+int dist2Cube = 175; // mm to grab cube
 
 // MOVEMENT / CONTROL
 void rDrive(double l_deg, double r_deg, double l_speed, double r_speed, bool wait); // DRIVE BY RELATIVE DISTANCE
@@ -37,12 +37,13 @@ void rClaw(double deg, double speed, bool wait); // LIFT BY ABSOLUTE DISTANCE (d
 void openClaw(int deg);              // open claw (deg)
 void closeClaw(double speed);           // close claw (speed)
 void drive2Target(double target);        // drive to target (distance in mm)
+void drive2Cube(void);
 void grabCube( int num_Cubes);    //GRAB CUBE - (# OF CUBES)
 
 void autonomous(void) {
    //position claw - DO NOT REMOVE
   //homeClaw();  
-drive2Target(200);
+drive2Target(dist2Cube);
 
 //  Go.driveFor(directionType::fwd, 6, distanceUnits::in, 50, velocityUnits::pct);
 //  Go.turnFor(90, rotationUnits::deg, 30, velocityUnits::pct);
@@ -99,7 +100,7 @@ int tLift(void) { // ARM & CLAW TASK
           if(Claw.current(vex::percentUnits::pct) < 70){
               Claw.spin(vex::directionType::fwd, 75, vex::velocityUnits::pct);}          
     } else if (Controller1.ButtonR1.pressing()) { 
-      drive2Target(200);
+      drive2Target(dist2Cube);
     } else if (Controller1.ButtonR2.pressing()) { // claw open
       grabCube(4);
     } else if (Controller1.ButtonUp.pressing()) { // move 'bot as arm lifts to minimize offset
@@ -153,41 +154,34 @@ void sDrive(double lSpeed, double rSpeed) { // drive by spin
   wait(0.2, seconds);   //let robot settle
 } // end sDrive
 
+void drive2Cube(){
+  double deg2target = (dist_mm - dist2Cube - 50) / 0.866666;
+  
+  rDrive(deg2target, deg2target, 30,30, 0);
+  wait(300,msec);
+}
+
 void drive2Target(double target) { // drive by spin
 
- //if robot's moving let it settle
-  // if(L_Drive.isSpinning() || R_Drive.isSpinning()){
-  //   L_Drive.stop(hold);
-  //   R_Drive.stop(hold);
-  //   wait(200,msec);}
+  //if robot's moving let it settle
+  if(L_Drive.isSpinning() || R_Drive.isSpinning()){
+    L_Drive.stop(hold);
+    R_Drive.stop(hold);
+    wait(200,msec);}
 
-bool b = 1;
-double speed = 20;
 
-L_Drive.setBrake(coast);
-R_Drive.setBrake(coast);
-  //make sure claw is not in the way
-/*   if(Lift.rotation(rotationUnits::deg)< 50){
-    aLift(60, 40,1);
-  } */
-wait(200,msec);
-  //drive witing +-10mm of target, slowing on approach
-  while(b){
-    wait(50,msec);
-      L_Drive.spin(vex::directionType::fwd, speed, vex::velocityUnits::pct);
-      R_Drive.spin(vex::directionType::rev, speed,vex::velocityUnits::pct); 
-    if(Dist.distance(vex::distanceUnits::mm) > target * 4){
-      speed = 50;
-   } else if(Dist.distance(vex::distanceUnits::mm) < target * 4 && Dist.distance(vex::distanceUnits::mm) > target + 50){
-     speed = 20;     
-    } else {
-      L_Drive.stop(hold);
-      R_Drive.stop(hold);
-      b = 0;
-   }
-  }
+// if(dist_mm <=0 || dist_mm > 99999){
+//   waitUntil(dist_mm > 0 || dist_mm < 99999);}
+
+
+  wait(200,msec);
   L_Drive.setBrake(hold);
   R_Drive.setBrake(hold);
+  double deg2target = (dist_mm - target - 40) / 0.866666;
+  
+  rDrive(deg2target, deg2target, Dist.distance(vex::distanceUnits::mm)/target * 8 ,Dist.distance(vex::distanceUnits::mm)/target * 8 , 1);
+
+
 } // end drive2Target
 
 void aLift(double deg, double speed, bool b) { // position lift by absolute position
