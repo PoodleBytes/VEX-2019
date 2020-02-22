@@ -1,0 +1,117 @@
+config.h
+extern smartdrive Drive;
+extern inertial Gyro;
+
+config.cpp
+inertial Gyro = inertial(PORT20);
+smartdrive Drive = smartdrive(L_Drive, R_Drive, Gyro,319.19, 320, 165, mm, 1);  
+
+
+void vexcodeInit( void ) {
+  Brain.Screen.print("Device initialization...");
+  Brain.Screen.setCursor(2, 1);
+  // calibrate the drivetrain gyro
+  wait(200, msec);
+  Gyro.calibrate();
+  Brain.Screen.print("Calibrating Gyro for Drivetrain");
+  // wait for the gyro calibration process to finish
+  while (Gyro.isCalibrating()) {
+    wait(25, msec);
+  }
+  // reset the screen now that the calibration is complete
+  Brain.Screen.clearScreen();
+  Brain.Screen.setCursor(1,1);
+  wait(50, msec);
+  Brain.Screen.clearScreen();
+}
+
+
+
+main.cpp
+
+  Drive.driveFor(forward, 12, distanceUnits::in, 40, velocityUnits::pct);
+  Drive.turnFor(right, 90, rotationUnits::deg);
+
+pre_auton() //may not be used
+  //calibrate inertial sensor
+  Gyro.calibrate();
+  // waits for the Inertial Sensor to calibrate
+  while (Gyro.isCalibrating()) {
+    wait(100, msec);
+  }
+  
+  https://api.vexcode.cloud/v5/html/classvex_1_1smartdrive.html
+  https://api.vexcode.cloud/v5/html/classvex_1_1inertial.html
+  https://www.vexforum.com/t/vexcode-motor-groups-and-drivetrain-example/69161
+  
+  https://www.vexforum.com/t/inertial-sensor-programming-for-rms-c/72142/2
+  ===================https://www.vexforum.com/t/inertial-sensor-malfunction/74288/12
+  void inertialTurnForPID(int degrees, double maxVoltage) {
+  
+  double target = Inertial10.rotation(rotationUnits::deg) + degrees;
+  Brain.Screen.newLine();
+  Brain.Screen.print("Target:");
+  Brain.Screen.print(target);
+  Brain.Screen.newLine();
+
+  double iSensorValue = Inertial10.rotation(rotationUnits::deg);
+
+  int allowedRange = 5;
+
+  //the error (Proportional)
+  double error = 0;
+  double kP = 0.03;
+
+  //Integral
+  double integral = 0;
+  double kI = 0.00;
+
+  //Derivative
+  double derivative = 0;
+  double kD = 0.00;
+  double previousError = 0;
+
+  //the power to the motor
+  double power = 0;
+
+  while(iSensorValue < (target - allowedRange) || iSensorValue > (target + allowedRange)) {
+    iSensorValue = Inertial10.rotation(rotationUnits::deg);
+    
+    Brain.Screen.clearLine(4, black);
+    Brain.Screen.setCursor(4, 1);
+    Brain.Screen.print(iSensorValue);
+
+    error = target - iSensorValue;
+
+    integral += error;
+    //if you reach the goal or cross it, set integral to zero
+    if(error == 0 || error * previousError < 0) {
+      integral = 0;
+    }
+    //only use integral at the end
+    if(abs(error) > 40) {
+      integral = 0;
+    }
+
+    derivative = error - previousError;
+    previousError = error;
+
+    power = (error * kP) + (integral * kI) + (derivative * kD);
+
+    if(power > maxVoltage) {
+      power = maxVoltage;
+    }
+    if(power < -maxVoltage) {
+      power = -maxVoltage;
+    }
+
+    L_Drive.spin(directionType::fwd, power, voltageUnits::volt);
+    R_Drive.spin(directionType::rev, power, voltageUnits::volt);
+
+    task::sleep(20);
+  }
+  
+  L_Drive.stop(brakeType::hold);
+  R_Drive.stop(brakeType::hold);
+
+}
