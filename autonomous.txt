@@ -1,3 +1,65 @@
+//*** AUTONOMOUS FEB 22 2020 (STATE) ***//
+//*** BLUE - REVERSE TURNS FOR RED ***//
+
+//BLUE BIG 4PT
+homeClaw();  
+
+closeClaw(80);
+aLift(75,50,1);
+
+drive2Target(dist2Cube);
+aLift(0,10,0);
+openClaw(-25, 40);
+closeClaw(80);
+aLift(70,40,1);
+
+Drive.turnFor(right, 100, rotationUnits::deg);
+Drive.driveFor(fwd, 4,distanceUnits::in,1);
+
+aLift(0,15,1);
+openClaw(-25, 55);
+Drive.driveFor(reverse, 5, distanceUnits::in,1);
+Drive.turnFor(left, 175, rotationUnits::deg);
+Drive.driveFor(fwd, 2,distanceUnits::in,1);
+closeClaw(60);
+
+aLift(250,50,0);
+Drive.turnFor(left, 5, rotationUnits::deg);
+Drive.driveFor(fwd, 650,distanceUnits::mm,1);
+openClaw(-35, 65);
+
+//BLUE-SMALL 3PT
+homeClaw();  
+ 
+closeClaw(80);
+aLift(75,40,1);
+
+drive2Target(dist2Cube - 60);
+rLift(-20,15,0);
+wait(200,msec);
+openClaw(-35, 50);
+aLift(0,19,1);
+closeClaw(80);
+aLift(80,40,1);
+
+wait(200,msec);
+drive2Target(dist2Cube);
+rLift(-20,15,0);
+wait(200,msec);
+openClaw(-35, 50);
+aLift(0,19,1);
+closeClaw(80);
+aLift(80,40,1);
+
+wait(200,msec);
+Drive.turnFor(left, 127, rotationUnits::deg);
+wait(200,msec);
+Drive.driveFor(fwd, 19,distanceUnits::in,1);
+
+aLift(0,15,1);
+openClaw(-10, 55);
+Drive.driveFor(reverse, 5, distanceUnits::in,1);
+openClaw(-15, 55);
 
 
 
