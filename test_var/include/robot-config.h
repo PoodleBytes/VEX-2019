@@ -35,7 +35,7 @@ extern void aLift(double deg, double speed, bool wait); // LIFT BY ABSOLUTE DIST
 extern void rClaw(double deg, double speed, bool wait); // LIFT BY ABSOLUTE DISTANCE (deg, speed, wait)
 extern void openClaw(int deg, int speed);              // open claw (deg)
 extern void closeClaw(double speed);           // close claw (speed)
-extern void drive2Target(double target);        // drive to target (distance in mm)
+extern void drive2Target(double target, double s, bool b);        // drive to target (distance in mm)
 extern void grabCube( int num_Cubes);    //GRAB CUBE - (# OF CUBES)
 extern void turnTo(int degrees, double maxVoltage);
 extern void varMotorRot(double target, bool b);//distance

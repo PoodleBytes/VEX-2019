@@ -46,4 +46,5 @@ int dist2Cube = 175; // mm to grab cube
  */
 void vexcodeInit( void ) {
 
+
 }

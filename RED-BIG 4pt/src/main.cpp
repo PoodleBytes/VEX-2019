@@ -13,12 +13,12 @@ competition Competition;
 
 void autonomous(void) {
    //position claw - DO NOT REMOVE
-homeClaw();  
+//homeClaw();  
 
 closeClaw(80);
 aLift(75,50,1);
 
-drive2Target(dist2Cube);
+drive2Target(dist2Cube-30);
 aLift(0,10,0);
 openClaw(-25, 40);
 closeClaw(80);

@@ -13,14 +13,51 @@ competition Competition;
 
 void autonomous(void) {
    //position claw - DO NOT REMOVE
-//homeClaw();  
+homeClaw();  
 
-varMotorDist(dist2Cube, 1);
+
+closeClaw(80);
+aLift(75,50,1);
+
+drive2Target(dist2Cube, 25, 1);
+/*
+aLift(0,10,0);
+openClaw(-25, 40);
+closeClaw(80);
+aLift(70,40,1);
+
+Drive.turnFor(right, 100, rotationUnits::deg);
+Drive.driveFor(fwd, 4,distanceUnits::in,1);
+
+aLift(0,15,1);
+openClaw(-25, 55);
+Drive.driveFor(reverse, 5, distanceUnits::in,1);
+Drive.turnFor(left, 175, rotationUnits::deg);
+Drive.driveFor(fwd, 2,distanceUnits::in,1);
+closeClaw(60);
+
+aLift(250,50,0);
+Drive.turnFor(left, 5, rotationUnits::deg);
+Drive.driveFor(fwd, 650,distanceUnits::mm,1);
+openClaw(-35, 65);//*/
+
+
+
+//varMotorDist(dist2Cube, 1);
 
 }//END AUTOMOUS
 
 
 void usercontrol(void) {
+
+  
+// if(!vexCompetitionStatus()){//If not competitionswitch or field control connected
+//     bool isAllowed = false;
+//     while(!isAllowed){
+//       if (Controller1.ButtonA.pressing() && Controller1.ButtonB.pressing()) isAllowed = true; // If both buttons pressing
+//       vex::task::sleep(200);
+//       }
+//     }
   
   // START TASK for LIFT
   vex::task t(tLift); // start task which updates controller screen
@@ -277,7 +314,7 @@ void grabCube(int n){
   int liftTo =  70 * n;
     
   aLift(liftTo, 35, 1);        // lift claw to top of stack
-  drive2Target(dist2Cube);
+  drive2Target(dist2Cube, 25, 1);
   aLift(0,10,0);
   openClaw(-35, 25);
   wait(200,msec);

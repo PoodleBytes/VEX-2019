@@ -50,6 +50,15 @@ openClaw(-15, 55);
 
 
 void usercontrol(void) {
+
+if(!isCompetitionSwitch() && !isFieldControl()){//If not competitionswitch or field control connected
+    bool isAllowed = false;
+    while(!isAllowed){
+    if (Controller1.ButtonA.pressing() && Controller1.ButtonB.pressing()) isAllowed = true; // If both buttons pressing
+    vex::task::sleep(20);
+}
+
+}
   
   // START TASK for LIFT
   vex::task t(tLift); // start task which updates controller screen
