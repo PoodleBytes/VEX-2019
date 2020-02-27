@@ -38,7 +38,7 @@ aLift(80,40,1);
 wait(200,msec);
 Drive.turnFor(right, 127, rotationUnits::deg);
 wait(200,msec);
-Drive.driveFor(fwd, 19,distanceUnits::in,1);
+Drive.driveFor(fwd, 20.5,distanceUnits::in,1);
 
 aLift(0,15,1);
 openClaw(-10, 55);
