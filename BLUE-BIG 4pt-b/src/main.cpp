@@ -13,30 +13,30 @@ competition Competition;
 
 void autonomous(void) {
    //position claw - DO NOT REMOVE
-   homeClaw();  
+homeClaw();  
 
 closeClaw(80);
 aLift(75,50,1);
 
-drive2Target(dist2Cube);
+drive2Target(dist2Cube-40);
 aLift(0,10,0);
 openClaw(35, 40);
 closeClaw(80);
 aLift(70,40,1);
 
 Drive.turnFor(right, 120, rotationUnits::deg);//**TURN
-Drive.driveFor(fwd, 5,distanceUnits::in,1);
+Drive.driveFor(fwd, 6,distanceUnits::in,1);
 
 aLift(0,15,1);
 openClaw(0, 55);
-Drive.driveFor(reverse, 4, distanceUnits::in,1);
-Drive.turnFor(left, 190, rotationUnits::deg);//**TURN
-Drive.driveFor(fwd, 2,distanceUnits::in,1);
+Drive.driveFor(reverse, 5, distanceUnits::in,1);
+Drive.turnFor(left, 175, rotationUnits::deg);//**TURN
+Drive.driveFor(fwd, 6,distanceUnits::in,1);
 closeClaw(60);
 
 aLift(250,50,0);
-Drive.turnFor(left, 8, rotationUnits::deg);//**TURN
-Drive.driveFor(fwd, 650,distanceUnits::mm,1);
+Drive.turnFor(left, 20, rotationUnits::deg);//**TURN
+Drive.driveFor(fwd, 625,distanceUnits::mm,1);
 openClaw(0, 65);
 //start skills auto
 //Drive.driveFor(reverse, 4,distanceUnits::in,1);

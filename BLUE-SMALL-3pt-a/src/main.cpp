@@ -17,6 +17,7 @@ homeClaw();
  
 closeClaw(80);
 aLift(75,40,1);
+wait(200,msec);
 
 drive2Target(dist2Cube);
 rLift(-20,15,0);
@@ -35,7 +36,7 @@ aLift(0,19,1);
 closeClaw(80);
 aLift(80,40,1);
 
-wait(200,msec);
+wait(300,msec);
 Drive.turnFor(left, 132, rotationUnits::deg);
 wait(200,msec);
 Drive.driveFor(fwd, 18.5,distanceUnits::in,1);

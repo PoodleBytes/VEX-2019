@@ -19,31 +19,31 @@ closeClaw(70);
 aLift(75,40,1);
 
 drive2Target(dist2Cube - 60);
-// rLift(-20,15,0);
-// wait(200,msec);
-// openClaw(35, 50);
-// aLift(0,19,1);
-// closeClaw(80);
-// aLift(80,40,1);
+rLift(-20,15,0);
+wait(200,msec);
+openClaw(35, 50);
+aLift(0,19,1);
+closeClaw(80);
+aLift(80,40,1);
 
-// wait(200,msec);
-// drive2Target(dist2Cube);
-// rLift(-20,15,0);
-// wait(200,msec);
-// openClaw(35, 50);
-// aLift(0,19,1);
-// closeClaw(80);
-// aLift(80,40,1);
+wait(200,msec);
+drive2Target(dist2Cube);
+rLift(-20,15,0);
+wait(200,msec);
+openClaw(35, 50);
+aLift(0,19,1);
+closeClaw(80);
+aLift(80,40,1);
 
-// wait(200,msec);
-// Drive.turnFor(right, 132, rotationUnits::deg);
-// wait(200,msec);
-// Drive.driveFor(fwd, 19,distanceUnits::in,1);
+wait(200,msec);
+Drive.turnFor(right, 132, rotationUnits::deg);
+wait(200,msec);
+Drive.driveFor(fwd, 19,distanceUnits::in,1);
 
-// aLift(0,15,1);
-// openClaw(35, 55);
-// Drive.driveFor(reverse, 5, distanceUnits::in,1);
-// openClaw(0, 55);
+aLift(0,15,1);
+openClaw(35, 55);
+Drive.driveFor(reverse, 5, distanceUnits::in,1);
+openClaw(0, 55);
 
 
 }//END AUTOMOUS

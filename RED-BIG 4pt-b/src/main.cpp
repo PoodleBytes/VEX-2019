@@ -18,28 +18,29 @@ void autonomous(void) {
 closeClaw(80);
 aLift(75,50,1);
 
-drive2Target(dist2Cube);
+drive2Target(dist2Cube-40);
 aLift(0,10,0);
 openClaw(35, 40);
 closeClaw(80);
 aLift(70,40,1);
 
-Drive.turnFor(right, 120, rotationUnits::deg);//**TURN
+wait(300,msec);
+Drive.turnFor(left, 105, rotationUnits::deg);//**TURN
 Drive.driveFor(fwd, 5,distanceUnits::in,1);
 
 aLift(0,15,1);
 openClaw(0, 55);
 Drive.driveFor(reverse, 4, distanceUnits::in,1);
-Drive.turnFor(left, 190, rotationUnits::deg);//**TURN
-Drive.driveFor(fwd, 2,distanceUnits::in,1);
+wait(300,msec);
+Drive.turnFor(right, 170, rotationUnits::deg);//**TURN
+Drive.driveFor(fwd, 4,distanceUnits::in,1);
 closeClaw(60);
 
 aLift(250,50,0);
-Drive.turnFor(left, 8, rotationUnits::deg);//**TURN
-Drive.driveFor(fwd, 650,distanceUnits::mm,1);
+wait(300,msec);
+Drive.turnFor(right, 11, rotationUnits::deg);//**TURN
+Drive.driveFor(fwd, 625,distanceUnits::mm,1);
 openClaw(0, 65);
-//start skills auto
-//Drive.driveFor(reverse, 4,distanceUnits::in,1);
 
 
 }//END AUTOMOUS
