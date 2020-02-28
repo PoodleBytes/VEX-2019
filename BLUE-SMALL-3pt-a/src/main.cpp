@@ -18,7 +18,7 @@ homeClaw();
 closeClaw(80);
 aLift(75,40,1);
 
-drive2Target(dist2Cube - 60);
+drive2Target(dist2Cube);
 rLift(-20,15,0);
 wait(200,msec);
 openClaw(35, 50);
@@ -41,7 +41,7 @@ wait(200,msec);
 Drive.driveFor(fwd, 18.5,distanceUnits::in,1);
 
 aLift(0,15,1);
-openClaw(45, 55);
+openClaw(50, 55);
 Drive.driveFor(reverse, 5, distanceUnits::in,1);
 openClaw(0, 55);
 
