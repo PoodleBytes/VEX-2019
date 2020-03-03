@@ -32,12 +32,12 @@ aLift(0,15,1);
 openClaw(0, 55);
 Drive.driveFor(reverse, 4, distanceUnits::in,1);
 Drive.turnFor(left, 190, rotationUnits::deg);//**TURN
-Drive.driveFor(fwd, 2,distanceUnits::in,1);
+Drive.driveFor(fwd, 5,distanceUnits::in,1);
 closeClaw(60);
 
 aLift(250,50,0);
-Drive.turnFor(left, 8, rotationUnits::deg);//**TURN
-Drive.driveFor(fwd, 650,distanceUnits::mm,1);
+Drive.turnFor(left, 10, rotationUnits::deg);//**TURN
+Drive.driveFor(fwd, 665,distanceUnits::mm,1);
 openClaw(0, 65);
 
 }//END AUTOMOUS
@@ -98,7 +98,7 @@ int tLift(void) { // ARM & CLAW TASK
     } else if (Controller1.ButtonL2.pressing()) { // claw open
           Claw.spin(vex::directionType::rev, 75, vex::velocityUnits::rpm);
     } else if (Controller1.ButtonL1.pressing()) { // claw close
-          if(Claw.current(vex::percentUnits::pct) < 70){
+          if(L_Claw.current(vex::percentUnits::pct) < 70){
               Claw.spin(vex::directionType::fwd, 75, vex::velocityUnits::rpm);}          
     } else if (Controller1.ButtonR1.pressing()) { 
     } else if (Controller1.ButtonR2.pressing()) { // claw open
@@ -210,7 +210,7 @@ void rClaw(double deg, double speed, bool b) { // position lift by relative posi
 void closeClaw(double speed) {
   do {
     Claw.spin(vex::directionType::fwd, speed, vex::velocityUnits::rpm);
-  } while (Claw.current(vex::percentUnits::pct) < 80);
+  } while (L_Claw.current(vex::percentUnits::pct) < 80);
   Claw.stop(hold);
 } // end rClaw
 
